@@ -9,3 +9,5 @@ __pycache__/
 .system_generated/
 kaggle_outputs/*.log
 gradcam_out/
+
+~$*
