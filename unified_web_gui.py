@@ -37,9 +37,11 @@ from flask import Flask, request, jsonify, render_template_string
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
-BASE_DIR = r"D:\new pro"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_PATH = os.path.join(BASE_DIR, "models_cache.pkl")
-IMG_DIR = os.path.join(BASE_DIR, "dataset ttv", "cimt_images")
+IMG_DIR = os.path.join(BASE_DIR, "sample_images")
+if not os.path.exists(IMG_DIR) or len(os.listdir(IMG_DIR)) == 0:
+    IMG_DIR = r"D:\retfound anti\cimt_images"
 RETFOUND_DIR = r"D:\retfound anti\RETFound_MAE"
 CKPT_PATH = r"D:\retfound anti\RETFound_cfp_weights.pth"
 

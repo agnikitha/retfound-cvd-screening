@@ -1,0 +1,4 @@
+Split,N_Patients,N_Images,Accuracy,Balanced_Accuracy,AUROC,Sensitivity,Specificity,Precision,F1_Score,TP,FP,TN,FN
+Training,2603,5206,71.26,76.33,0.8589,65.39,87.27,93.33,0.769,1245,89,610,659
+Validation,200,400,82.5,82.5,0.8703,81.0,84.0,83.51,0.8223,81,16,84,19
+Testing,100,200,87.0,87.0,0.946,82.0,92.0,91.11,0.8632,41,4,46,9

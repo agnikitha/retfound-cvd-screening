@@ -1,0 +1,13 @@
+{
+  "id": "xtygvh/retfound-cvd-clinical-benchmark",
+  "title": "RETFound-CVD Clinical Benchmark",
+  "code_file": "retfound_cvd_kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "xtygvh/cimt-retfound-embeds"
+  ]
+}

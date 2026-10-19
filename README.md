@@ -40,16 +40,16 @@
 
 ## 🛠️ Quick Start & Local Web App
 
-### 1. Installation
+### Option A: One-Click Launch (Windows)
+Double-click [`START_RETFOUND_GUI.bat`](START_RETFOUND_GUI.bat) or [`run_gui.bat`](run_gui.bat).  
+It automatically frees port 5050, boots the platform, and opens your default browser!
+
+### Option B: Cross-Platform Python Launch
 ```bash
 git clone https://github.com/agnikitha/retfound-cvd-screening.git
 cd retfound-cvd-screening
 pip install -r requirements.txt
-```
-
-### 2. Launch the Clinical Screening GUI
-```bash
-python unified_web_gui.py
+python portable_launcher.py
 ```
 Open your browser and navigate to:  
 👉 **`http://127.0.0.1:5050`**
@@ -59,19 +59,35 @@ Open your browser and navigate to:
 ## 📁 Repository Structure
 
 ```
-├── unified_web_gui.py                     # Single-file interactive web application
-├── models_cache.pkl                       # Serialized L2 linear probes, regressors & disease heads
-├── retfound_gradcam_cvd.py                # Standalone ViT Block -4 Grad-CAM engine
-├── create_audit_verified_dashboard.py     # 3-panel verified clinical dashboard generator
-├── audit_comprehensive_evaluation.py     # All-splits evaluation script
-├── eval_regression_baseline.py            # CIMT continuous mm regression baseline
-├── test_predictions_audit.csv             # 100 test patient audited predictions
-├── final_audit_cimt_retinal_risks.csv     # 100 test patient 5-disease probabilities
+├── START_RETFOUND_GUI.bat                     # One-click Windows launcher
+├── run_gui.bat                                # Windows launcher alias
+├── portable_launcher.py                       # Cross-platform Python launcher
+├── unified_web_gui.py                         # Interactive Flask Web GUI with dynamic XAI
+├── models_cache.pkl                           # Serialized L2 linear probes, regressors & disease heads
+├── sample_images/                             # Included clinical fundus test images (PNG)
+├── paper_results/                             # Publication-ready figures (300 DPI) & CSV tables
+│   ├── fig1_cimt_confusion_matrices_all_splits.png
+│   ├── fig2_mured_test_confusion_matrices.png
+│   ├── fig3_biological_correlation_heatmap.png
+│   ├── fig4_cimt_biomarker_trends.png
+│   ├── fig5_roc_curves_cimt_and_mured.png
+│   ├── cimt_all_splits_metrics_table.csv
+│   ├── mured_5_diseases_all_splits_metrics.csv
+│   └── biological_correlation_matrix_pearson.csv
+├── audit_split_results/                       # Patient-level split evaluation records
+│   ├── all_splits_metrics_summary.csv
+│   ├── testing_images_with_disease_probabilities.csv
+│   └── confusion_matrices_all_splits_combined.png
+├── generate_all_paper_figures_and_tables.py   # Script to reproduce all paper results
+├── retfound_gradcam_cvd.py                    # Standalone ViT Block-20 Grad-CAM engine
+├── test_web_api.py                            # Verification test script
+├── test_predictions_audit.csv                 # 100 test patient audited predictions
+├── final_audit_cimt_retinal_risks.csv         # 100 test patient 5-disease probabilities
 ├── retfound_cvd_comprehensive_audit_report.md # Full academic audit report
 ├── kaggle_kernel/
-│   └── retfound_cvd_kaggle.ipynb          # Cloud GPU benchmark notebook
-├── requirements.txt                       # Python dependencies
-└── README.md                              # Project documentation
+│   └── retfound_cvd_kaggle.ipynb              # Cloud GPU benchmark notebook
+├── requirements.txt                           # Python dependencies
+└── README.md                                  # Project documentation
 ```
 
 ---
