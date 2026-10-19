@@ -1,0 +1,11 @@
+dataset ttv/
+mingit/
+mingit.zip
+*.pth
+*.tar.gz
+*.zip
+__pycache__/
+*.pyc
+.system_generated/
+kaggle_outputs/*.log
+gradcam_out/
