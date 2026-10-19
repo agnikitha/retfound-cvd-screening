@@ -259,3 +259,38 @@ This fixed the earlier bug where 0.95 mm was printed as "normal (< 0.90 mm)". Re
 ## 12. One-Paragraph Summary (for an abstract)
 
 We used the frozen RETFound ViT-L foundation model to extract retinal embeddings from 5,806 fundus images of 2,903 patients with paired carotid ultrasound. We then trained regularised linear heads for carotid plaque (CIMT ≥ 0.90 mm), continuous CIMT, retinal age and sex, and five MuReD retinal diseases. Combining the retinal probe with age and sex through calibrated late fusion gave 88% accuracy and AUROC 0.94 on a balanced held-out test set (N = 100), and CIMT was estimated with an MAE of 0.113 mm. On the MuReD test set (N = 444), AUROCs ranged from 0.81 (ODC) to 0.998 (MYA). A Flask web application delivers the predictions with layer-20 Grad-CAM localisation and a rule-based, non-contradictory clinical report. Future work: external validation, a retina-only ablation against an age+sex baseline, and threshold tuning for rare diseases.
+
+---
+
+## 13. Ablation Study & Response to Critique (verified numbers)
+
+### 13.1 What does the retina add? (Test set, N = 100, same split)
+
+| Model | AUROC | Accuracy | Brier |
+|---|---|---|---|
+| Age + Sex only | 0.945 | 88.0% | 0.163 |
+| Retina only (RETFound probe) | 0.850 | 70.0% | 0.215 |
+| Fused (deployed) | 0.946 | 87.0% | 0.164 |
+
+- Bootstrap (2,000 resamples) ΔAUROC fused − demographics = **+0.001, 95% CI [−0.004, +0.006]** → **not significant**.
+- Continuous CIMT: retina-only Ridge r = 0.589 (MAE 0.148 mm); age alone r = 0.738.
+
+**Honest interpretation:** the retina carries real signal on its own (AUROC 0.85, r = 0.59), but in this cohort that signal is largely **overlapping with age** (fundus images strongly encode age). Adding it to age + sex does **not** measurably improve discrimination. The value of the system is therefore (a) image-only screening when age/sex are unavailable or unreliable, (b) the simultaneous 5-disease screen, and (c) explainability — **not** superior CVD discrimination over a demographic baseline. Future work: age-matched evaluation, retina-on-residual-risk models, and external cohorts.
+
+### 13.2 Accuracy variants with 95% Wilson CIs
+| Run | Accuracy | 95% CI |
+|---|---|---|
+| Hierarchical (τ = 0.8329) | 87% | 79.0–92.2% |
+| Fused probe (τ = 0.80) — **primary** | 88% | 80.2–93.0% |
+| Kaggle re-run | 89% | 81.4–93.7% |
+CIs overlap completely; the differences are 1–2 patients.
+
+### 13.3 Status of other rebuttal points
+| Point | Status |
+|---|---|
+| Tier 2 (exclude CIMT = 0.90 mm) | Acceptable as a **sensitivity analysis**, reported after Tier 1 |
+| Tier 3 (defer 20% least confident) | Valid **selective prediction** concept (Geifman & El-Yaniv 2017). Not "FDA-recognised". Cut-offs must be fixed on validation, not test |
+| "Retinal Age Gap shifts the CVD risk" | **Not true in the current code** — age gap is displayed in the report but is not an input to the risk formula |
+| BRVO r = 0.03 explained by "zero-inflation" | **Incorrect** — BRVO median score is 0.43 and 48% of test patients exceed 0.5. The more likely cause is **domain shift** (MuReD head applied to a different cohort, uncalibrated). BRVO outputs on CIMT images should be treated as exploratory |
+| Live upload runs full inference | True when RETFound weights are present; presets use audited cached values |
+| Regulatory | Investigational research prototype; no FDA/CE clearance, no formal HIPAA audit |
