@@ -11,3 +11,5 @@ kaggle_outputs/*.log
 gradcam_out/
 
 ~$*
+
+gui_server.log
