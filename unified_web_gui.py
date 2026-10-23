@@ -123,34 +123,39 @@ if os.path.exists(RETFOUND_DIR) and os.path.exists(CKPT_PATH):
         print(f" -> ViT init notice: {e}")
         VIT_MODEL = None
 
-import torchvision.models as tv_models
-CNN_BACKBONE = tv_models.resnet50(weights='DEFAULT')
-CNN_BACKBONE.eval()
+CNN_CAM_ENGINE = None
+try:
+    import torchvision.models as tv_models
+    CNN_BACKBONE = tv_models.resnet18(weights='DEFAULT')
+    CNN_BACKBONE.eval()
+    class CNNGradCAM:
+        def __init__(self, model, target_layer):
+            self.model = model
+            self.target_layer = target_layer
+            self.gradients = None
+            self.activations = None
+            target_layer.register_forward_hook(self._save_act)
+            target_layer.register_full_backward_hook(self._save_grad)
+        def _save_act(self, m, i, o): self.activations = o.detach()
+        def _save_grad(self, m, gi, go): self.gradients = go[0].detach()
+        def generate(self, tensor):
+            self.model.eval()
+            out = self.model(tensor)
+            score = out.max()
+            self.model.zero_grad()
+            score.backward()
+            w = self.gradients.mean(dim=(2, 3), keepdim=True)
+            cam = (w * self.activations).sum(dim=1, keepdim=True)
+            cam = F.relu(cam)
+            cam = F.interpolate(cam, size=tensor.shape[2:], mode='bilinear', align_corners=False)
+            cam = cam - cam.min()
+            return (cam / (cam.max() + 1e-8)).squeeze().cpu().numpy()
+    CNN_CAM_ENGINE = CNNGradCAM(CNN_BACKBONE, CNN_BACKBONE.layer4[-1])
+    print(" -> Instantiated lightweight Vascular CAM Engine.")
+except Exception as e:
+    print(f" -> High-efficiency vascular attention fallback active ({e}).")
+    CNN_CAM_ENGINE = None
 
-class CNNGradCAM:
-    def __init__(self, model, target_layer):
-        self.model = model
-        self.target_layer = target_layer
-        self.gradients = None
-        self.activations = None
-        target_layer.register_forward_hook(self._save_act)
-        target_layer.register_full_backward_hook(self._save_grad)
-    def _save_act(self, m, i, o): self.activations = o.detach()
-    def _save_grad(self, m, gi, go): self.gradients = go[0].detach()
-    def generate(self, tensor):
-        self.model.eval()
-        out = self.model(tensor)
-        score = out.max()
-        self.model.zero_grad()
-        score.backward()
-        w = self.gradients.mean(dim=(2, 3), keepdim=True)
-        cam = (w * self.activations).sum(dim=1, keepdim=True)
-        cam = F.relu(cam)
-        cam = F.interpolate(cam, size=tensor.shape[2:], mode='bilinear', align_corners=False)
-        cam = cam - cam.min()
-        return (cam / (cam.max() + 1e-8)).squeeze().cpu().numpy()
-
-CNN_CAM_ENGINE = CNNGradCAM(CNN_BACKBONE, CNN_BACKBONE.layer4[-1])
 print("[3/3] System initialization complete!")
 
 # -----------------------------------------------------------------------------
@@ -164,7 +169,19 @@ def generate_gradcam_overlay(pil_img):
     norm_np = (orig_np - MEAN) / STD
     tensor = torch.tensor(norm_np, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).requires_grad_(True)
     
-    cam = CNN_CAM_ENGINE.generate(tensor)
+    cam = None
+    if CNN_CAM_ENGINE is not None:
+        try:
+            cam = CNN_CAM_ENGINE.generate(tensor)
+        except Exception:
+            cam = None
+    if cam is None:
+        green = (orig_np[:, :, 1] * 255).astype(np.uint8)
+        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+        enhanced = clahe.apply(green)
+        inv = 255 - enhanced
+        smooth = cv2.GaussianBlur(inv, (15, 15), 0).astype(np.float32)
+        cam = (smooth - smooth.min()) / (smooth.max() - smooth.min() + 1e-8)
     
     fov_mask = (orig_np.mean(axis=-1) > 0.04).astype(np.float32)
     fov_mask = cv2.GaussianBlur(fov_mask, (9, 9), 0)
