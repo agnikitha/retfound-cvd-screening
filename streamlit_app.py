@@ -100,8 +100,6 @@ SC_DEM_SCALE = CACHE['sc_dem_scale']
 CLF_DEM_COEF = CACHE['clf_dem_coef']
 CLF_DEM_INTERCEPT = CACHE['clf_dem_intercept']
 
-SC_REG_MEAN = CACHE['sc_reg_cimt_mean']
-SC_REG_SCALE = CACHE['sc_reg_cimt_scale']
 REG_CIMT_COEF = CACHE['reg_cimt_coef']
 REG_CIMT_INTERCEPT = CACHE['reg_cimt_intercept']
 
@@ -423,10 +421,10 @@ if selected_img is not None:
         p_ret = float(1.0 / (1.0 + np.exp(-(np.dot(norm_feat, CLF_RET_COEF) + CLF_RET_INTERCEPT))))
         cvd_prob = 0.83 * p_dem + 0.17 * p_ret
         
-        reg_input = np.hstack([used_age, used_gender_val, norm_feat])
-        norm_reg = (reg_input - SC_REG_MEAN) / (SC_REG_SCALE + 1e-8)
-        cimt_mm = float(np.dot(norm_reg, REG_CIMT_COEF) + REG_CIMT_INTERCEPT)
-        cimt_mm = max(0.60, min(1.50, cimt_mm))
+        dim_reg_ret = len(REG_CIMT_COEF) - 2
+        x_full = np.concatenate([np.array([used_age, used_gender_val]), norm_feat[:dim_reg_ret]])
+        cimt_mm = float(np.dot(REG_CIMT_COEF, x_full) + REG_CIMT_INTERCEPT)
+        cimt_mm = max(0.60, min(1.60, cimt_mm))
 
     if demo_mode == "Mode B: Manual Chronological Input":
         used_age = float(manual_age)
