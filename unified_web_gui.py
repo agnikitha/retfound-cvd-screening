@@ -195,22 +195,22 @@ def generate_gradcam_overlay(pil_img):
     overlay = 0.52 * orig_np + 0.48 * heatmap
     overlay = np.clip(overlay, 0, 1)
     
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor='#111827')
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor='#ffffff')
     axes[0].imshow(orig_np)
-    axes[0].set_title("Input Fundus Photography", color='white', fontsize=12, pad=8)
+    axes[0].set_title("Input Fundus Photography", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
     axes[0].axis('off')
     
     axes[1].imshow(masked_cam, cmap='jet')
-    axes[1].set_title("Vascular Attention Heatmap", color='white', fontsize=12, pad=8)
+    axes[1].set_title("Vascular Attention Heatmap", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
     axes[1].axis('off')
     
     axes[2].imshow(overlay)
-    axes[2].set_title("Clinical Anatomical Overlay", color='white', fontsize=12, pad=8)
+    axes[2].set_title("Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
     axes[2].axis('off')
     
     plt.tight_layout()
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', dpi=180, bbox_inches='tight', facecolor='#111827')
+    plt.savefig(buf, format='png', dpi=180, bbox_inches='tight', facecolor='#ffffff')
     plt.close()
     # Extract authentic spatial metrics from masked_cam
     y_peak, x_peak = np.unravel_index(np.argmax(masked_cam), masked_cam.shape)
@@ -456,11 +456,11 @@ HTML_TEMPLATE = """
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
-    .glass-card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .glow-cyan { box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25); }
-    .dropzone-border { border: 2px dashed rgba(6, 182, 212, 0.4); }
-    .dropzone-border:hover { border-color: rgba(6, 182, 212, 0.8); background: rgba(6, 182, 212, 0.05); }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    .glass-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05); }
+    .glow-cyan { box-shadow: 0 4px 14px -2px rgba(2, 132, 199, 0.1); }
+    .dropzone-border { border: 2px dashed #0284c7; background: #f8fafc; }
+    .dropzone-border:hover { border-color: #0369a1; background: #f0f9ff; }
   </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -470,21 +470,21 @@ HTML_TEMPLATE = """
     <div class="glass-card rounded-2xl p-6 glow-cyan flex flex-col md:flex-row items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-3">
-          <span class="p-2.5 bg-cyan-500/20 text-cyan-400 rounded-xl border border-cyan-500/30">
+          <span class="p-2.5 bg-sky-100 text-sky-600 rounded-xl border border-sky-200">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
           </span>
-          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-teal-300 to-white bg-clip-text text-transparent">
+          <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-sky-700">
             RETFound-CVD Clinical Screening & XAI
           </h1>
         </div>
-        <p class="text-xs md:text-sm text-gray-400 mt-1">
+        <p class="text-xs md:text-sm text-slate-500 mt-1">
           Non-Invasive Carotid Wall Thickness (CIMT), Retinal Biological Age & 5-Disease AI Platform
         </p>
       </div>
       <div class="flex flex-wrap gap-2 text-xs">
-        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ViT-Large 304M</span>
-        <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Kaggle Tesla T4 GPU</span>
-        <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Retinal Age Gap AI</span>
+        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">RETFound ViT-Large 304M</span>
+        <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 font-semibold">1.6M Retinal Pretrained</span>
+        <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold">Retinal Age Gap AI</span>
       </div>
     </div>
   </header>
@@ -497,46 +497,46 @@ HTML_TEMPLATE = """
 
       <!-- Patient Data & Preset Selector -->
       <div class="glass-card rounded-2xl p-6">
-        <h2 class="text-base font-semibold text-gray-200 mb-4 flex items-center gap-2">
-          <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <h2 class="text-base font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           Patient Demographic Controls
         </h2>
 
         <!-- Quick Demo Patient Buttons -->
         <div class="mb-4">
-          <label class="block text-xs font-medium text-gray-400 mb-2">⚡ Quick Load Audited Clinical Patients</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-2">⚡ Quick Load Audited Clinical Patients</label>
           <div class="grid grid-cols-2 gap-2 text-xs">
-            <button onclick="loadPreset('151594008', 55, 1, 1.10)" class="p-2 text-left rounded-lg bg-gray-800 hover:bg-cyan-900/40 border border-gray-700 hover:border-cyan-500 transition">
-              <span class="font-bold text-cyan-300">#151594008</span>
-              <span class="block text-[10px] text-gray-400">55M · CIMT 1.10mm (Plaque)</span>
+            <button onclick="loadPreset('151594008', 55, 1, 1.10)" class="p-2 text-left rounded-lg bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition">
+              <span class="font-bold text-sky-700">#151594008</span>
+              <span class="block text-[10px] text-slate-500">55M · CIMT 1.10mm (Plaque)</span>
             </button>
-            <button onclick="loadPreset('151932002', 55, 1, 0.90)" class="p-2 text-left rounded-lg bg-gray-800 hover:bg-cyan-900/40 border border-gray-700 hover:border-cyan-500 transition">
-              <span class="font-bold text-cyan-300">#151932002</span>
-              <span class="block text-[10px] text-gray-400">55M · CIMT 0.90mm (Boundary)</span>
+            <button onclick="loadPreset('151932002', 55, 1, 0.90)" class="p-2 text-left rounded-lg bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition">
+              <span class="font-bold text-sky-700">#151932002</span>
+              <span class="block text-[10px] text-slate-500">55M · CIMT 0.90mm (Boundary)</span>
             </button>
-            <button onclick="loadPreset('152071010', 73, 1, 1.10)" class="p-2 text-left rounded-lg bg-gray-800 hover:bg-cyan-900/40 border border-gray-700 hover:border-cyan-500 transition">
-              <span class="font-bold text-cyan-300">#152071010</span>
-              <span class="block text-[10px] text-gray-400">73M · CIMT 1.10mm (High Risk)</span>
+            <button onclick="loadPreset('152071010', 73, 1, 1.10)" class="p-2 text-left rounded-lg bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition">
+              <span class="font-bold text-sky-700">#152071010</span>
+              <span class="block text-[10px] text-slate-500">73M · CIMT 1.10mm (High Risk)</span>
             </button>
-            <button onclick="loadPreset('152073003', 67, 0, 1.10)" class="p-2 text-left rounded-lg bg-gray-800 hover:bg-cyan-900/40 border border-gray-700 hover:border-cyan-500 transition">
-              <span class="font-bold text-cyan-300">#152073003</span>
-              <span class="block text-[10px] text-gray-400">67F · CIMT 1.10mm (High Risk)</span>
+            <button onclick="loadPreset('152073003', 67, 0, 1.10)" class="p-2 text-left rounded-lg bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-400 transition">
+              <span class="font-bold text-sky-700">#152073003</span>
+              <span class="block text-[10px] text-slate-500">67F · CIMT 1.10mm (High Risk)</span>
             </button>
           </div>
         </div>
 
         <!-- Mode Switch: Auto-Predict vs Manual Override -->
-        <div class="mb-4 bg-gray-900/90 p-3 rounded-xl border border-gray-800">
-          <label class="block text-xs font-semibold text-gray-300 mb-2">Age & Sex Determination Mode:</label>
+        <div class="mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <label class="block text-xs font-semibold text-slate-700 mb-2">Age & Sex Determination Mode:</label>
           <div class="grid grid-cols-2 gap-2 text-xs">
-            <button type="button" id="btnModeAuto" onclick="setDemographicsMode('auto')" class="py-2 px-3 rounded-lg font-semibold transition bg-cyan-500 text-gray-950 flex items-center justify-center gap-1.5 shadow">
+            <button type="button" id="btnModeAuto" onclick="setDemographicsMode('auto')" class="py-2 px-3 rounded-lg font-semibold transition bg-sky-600 text-white flex items-center justify-center gap-1.5 shadow">
               <span>✨ Auto-Predict</span>
             </button>
-            <button type="button" id="btnModeManual" onclick="setDemographicsMode('manual')" class="py-2 px-3 rounded-lg font-medium transition bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center gap-1.5">
+            <button type="button" id="btnModeManual" onclick="setDemographicsMode('manual')" class="py-2 px-3 rounded-lg font-medium transition bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 flex items-center justify-center gap-1.5">
               <span>✏️ Manual Input</span>
             </button>
           </div>
-          <p id="modeHelperText" class="text-[11px] text-cyan-400 mt-2 italic">
+          <p id="modeHelperText" class="text-[11px] text-sky-700 mt-2 font-medium">
             ✨ AI will automatically infer biological age and sex directly from the retina.
           </p>
         </div>
@@ -544,12 +544,12 @@ HTML_TEMPLATE = """
         <!-- Manual Input Fields (Active when Manual mode selected) -->
         <div id="manualInputsSection" class="grid grid-cols-2 gap-3 mb-4 opacity-50 pointer-events-none transition">
           <div>
-            <label class="block text-xs font-medium text-gray-400 mb-1">Chronological Age</label>
-            <input type="number" id="inputAge" value="55" min="18" max="95" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+            <label class="block text-xs font-medium text-slate-600 mb-1">Chronological Age</label>
+            <input type="number" id="inputAge" value="55" min="18" max="95" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-sky-500">
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-400 mb-1">Biological Sex</label>
-            <select id="inputGender" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-400">
+            <label class="block text-xs font-medium text-slate-600 mb-1">Biological Sex</label>
+            <select id="inputGender" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-sky-500">
               <option value="1">Male</option>
               <option value="0">Female</option>
             </select>
@@ -597,18 +597,18 @@ HTML_TEMPLATE = """
 
       <!-- Loading Spinner -->
       <div id="loadingIndicator" class="hidden glass-card rounded-2xl p-12 text-center space-y-4">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-cyan-500 border-t-transparent"></div>
-        <p class="text-sm font-semibold text-cyan-300">Processing Fundus with RETFound ViT-Large...</p>
-        <p class="text-xs text-gray-500">Estimating biological age, gender, CIMT millimeter thickness, and backpropagating Grad-CAM</p>
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-sky-600 border-t-transparent"></div>
+        <p class="text-sm font-semibold text-sky-700">Processing Fundus with RETFound ViT-Large...</p>
+        <p class="text-xs text-slate-500">Estimating biological age, gender, CIMT millimeter thickness, and backpropagating Grad-CAM</p>
       </div>
 
       <!-- Welcome Placeholder -->
       <div id="welcomePlaceholder" class="glass-card rounded-2xl p-12 text-center space-y-3">
-        <div class="p-3 bg-gray-800 inline-block rounded-2xl text-cyan-400 mb-2">
+        <div class="p-3 bg-sky-50 inline-block rounded-2xl text-sky-600 mb-2 border border-sky-100">
           <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
-        <h3 class="text-lg font-bold text-gray-200">Awaiting Fundus Ingestion</h3>
-        <p class="text-xs text-gray-400 max-w-md mx-auto">
+        <h3 class="text-lg font-bold text-slate-800">Awaiting Fundus Ingestion</h3>
+        <p class="text-xs text-slate-500 max-w-md mx-auto">
           Select one of the audited test patients above or upload any fundus photograph to generate simultaneous biological age, sex, CVD risk, CIMT wall thickness, 5-disease screening, and Grad-CAM vascular heatmaps.
         </p>
       </div>
@@ -619,46 +619,46 @@ HTML_TEMPLATE = """
         <!-- 1. Visual Explainability (Grad-CAM 3-Panel) -->
         <div class="glass-card rounded-2xl p-6">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base font-semibold text-gray-200 flex items-center gap-2">
-              <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               Explainable AI: Retinal Microvascular Attention (Grad-CAM Layer 20/24)
             </h3>
-            <span class="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 px-2.5 py-1 rounded-full font-mono">
+            <span class="text-[10px] bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-1 rounded-full font-mono font-semibold">
               Hooked: ViT Block -4
             </span>
           </div>
-          <div class="rounded-xl overflow-hidden border border-gray-800 bg-gray-950">
+          <div class="rounded-xl overflow-hidden border border-slate-200 bg-white">
             <img id="gradcamImage" src="" alt="Grad-CAM Display" class="w-full h-auto">
           </div>
-          <p class="text-[11px] text-gray-400 mt-3 italic text-center">
+          <p class="text-[11px] text-slate-500 mt-3 italic text-center">
             Figure: Left = Input Fundus; Middle = Normalized Vascular Activation; Right = Anatomical Overlay targeting superior/inferior temporal arcades.
           </p>
         </div>
 
         <!-- 2. Retinal Biological Age & Sex Card (New Biomarkers Engine) -->
-        <div class="glass-card rounded-2xl p-6 border border-cyan-500/20 glow-cyan">
+        <div class="glass-card rounded-2xl p-6 border border-sky-100 glow-cyan">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base font-semibold text-gray-200 flex items-center gap-2">
-              <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               Retinal Biological Age & Anatomical Biomarkers
             </h3>
-            <span id="badgeDemoMode" class="text-[10px] px-2.5 py-1 rounded-full font-mono bg-cyan-950 text-cyan-300 border border-cyan-800"></span>
+            <span id="badgeDemoMode" class="text-[10px] px-2.5 py-1 rounded-full font-mono bg-sky-50 text-sky-700 border border-sky-200 font-semibold"></span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-3.5 bg-gray-900/70 rounded-xl border border-gray-800">
-              <span class="text-[10px] text-gray-400 uppercase font-bold block tracking-wider">Estimated Retinal Age</span>
-              <span id="textPredAge" class="text-3xl font-extrabold text-cyan-300 font-mono">-- yrs</span>
-              <span class="text-[11px] text-gray-400 block mt-1">Microvascular Caliber Age</span>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[10px] text-slate-500 uppercase font-bold block tracking-wider">Estimated Retinal Age</span>
+              <span id="textPredAge" class="text-3xl font-extrabold text-sky-700 font-mono">-- yrs</span>
+              <span class="text-[11px] text-slate-500 block mt-1">Microvascular Caliber Age</span>
             </div>
-            <div class="p-3.5 bg-gray-900/70 rounded-xl border border-gray-800">
-              <span class="text-[10px] text-gray-400 uppercase font-bold block tracking-wider">Retinal Age Gap</span>
-              <span id="textAgeGap" class="text-3xl font-extrabold font-mono text-emerald-400">-- yrs</span>
-              <span id="subAgeGap" class="text-[11px] text-gray-400 block mt-1">Biological vs Chronological</span>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[10px] text-slate-500 uppercase font-bold block tracking-wider">Retinal Age Gap</span>
+              <span id="textAgeGap" class="text-3xl font-extrabold font-mono text-emerald-600">-- yrs</span>
+              <span id="subAgeGap" class="text-[11px] text-slate-500 block mt-1">Biological vs Chronological</span>
             </div>
-            <div class="p-3.5 bg-gray-900/70 rounded-xl border border-gray-800">
-              <span class="text-[10px] text-gray-400 uppercase font-bold block tracking-wider">Predicted Biological Sex</span>
-              <span id="textPredGender" class="text-3xl font-extrabold text-white font-mono">--</span>
-              <span id="textGenderConf" class="text-[11px] text-gray-400 block mt-1">Confidence: --%</span>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="text-[10px] text-slate-500 uppercase font-bold block tracking-wider">Predicted Biological Sex</span>
+              <span id="textPredGender" class="text-3xl font-extrabold text-slate-900 font-mono">--</span>
+              <span id="textGenderConf" class="text-[11px] text-slate-500 block mt-1">Confidence: --%</span>
             </div>
           </div>
         </div>
@@ -670,19 +670,19 @@ HTML_TEMPLATE = """
           <div class="glass-card rounded-2xl p-6 glow-cyan flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Cardiovascular Risk Score</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Cardiovascular Risk Score</span>
                 <span id="badgeCVDStatus" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
               </div>
               <div class="flex items-baseline gap-2 my-2">
-                <span id="textCVDRisk" class="text-4xl font-extrabold text-white font-mono">--%</span>
-                <span class="text-xs text-gray-400">Probability of Atherosclerosis</span>
+                <span id="textCVDRisk" class="text-4xl font-extrabold text-slate-900 font-mono">--%</span>
+                <span class="text-xs text-slate-500">Probability of Atherosclerosis</span>
               </div>
-              <div class="w-full bg-gray-800 rounded-full h-3 mt-3 overflow-hidden">
-                <div id="barCVDRisk" class="h-full rounded-full transition-all duration-700" style="width: 0%"></div>
+              <div class="w-full bg-slate-200 rounded-full h-3 mt-3 overflow-hidden">
+                <div id="barCVDRisk" class="h-full rounded-full transition-all duration-700 bg-sky-600" style="width: 0%"></div>
               </div>
             </div>
-            <p class="text-[11px] text-gray-400 mt-4 border-t border-gray-800 pt-3">
-              Decision Cutoff Threshold: <span class="text-cyan-400 font-mono">tau = 0.8000</span> (Optimized for 97.62% Clinical Sensitivity)
+            <p class="text-[11px] text-slate-500 mt-4 border-t border-slate-200 pt-3">
+              Decision Cutoff Threshold: <span class="text-sky-700 font-mono font-bold">tau = 0.8000</span> (Optimized for 97.62% Clinical Sensitivity)
             </p>
           </div>
 
@@ -690,20 +690,20 @@ HTML_TEMPLATE = """
           <div class="glass-card rounded-2xl p-6 glow-cyan flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Predicted Carotid Wall (CIMT)</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Predicted Carotid Wall (CIMT)</span>
                 <span id="badgeCIMTStatus" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
               </div>
               <div class="flex items-baseline gap-2 my-2">
-                <span id="textCIMTmm" class="text-4xl font-extrabold text-cyan-300 font-mono">-- mm</span>
-                <span class="text-xs text-gray-400">B-Mode Ultrasound Estimation</span>
+                <span id="textCIMTmm" class="text-4xl font-extrabold text-sky-700 font-mono">-- mm</span>
+                <span class="text-xs text-slate-500">B-Mode Ultrasound Estimation</span>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-gray-400 mt-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 mt-2">
                 <span>Normal: &lt; 0.90 mm</span>
                 <span>Plaque / High Risk: &ge; 0.90 mm</span>
               </div>
             </div>
-            <p class="text-[11px] text-gray-400 mt-4 border-t border-gray-800 pt-3">
-              Ultrasound Acoustic Uncertainty: <span class="text-amber-400 font-mono">+/- 0.05 mm</span> (Physical Sonography Probe Tolerance)
+            <p class="text-[11px] text-slate-500 mt-4 border-t border-slate-200 pt-3">
+              Ultrasound Acoustic Uncertainty: <span class="text-amber-600 font-mono font-bold">+/- 0.05 mm</span> (Physical Sonography Probe Tolerance)
             </p>
           </div>
 
@@ -711,8 +711,8 @@ HTML_TEMPLATE = """
 
         <!-- 4. Parallel Ophthalmic Disease Screening (MuReD) -->
         <div class="glass-card rounded-2xl p-6">
-          <h3 class="text-base font-semibold text-gray-200 mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
             Parallel 5-Disease Retinal Pathology Profile (MuReD Clinical Cohort)
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3" id="diseaseGrid">
@@ -720,29 +720,62 @@ HTML_TEMPLATE = """
           </div>
         </div>
 
-        <!-- 5. Clinical Diagnostic Report & Explainability (XAI) -->
+        <!-- 5. RETFound Comprehensive Clinical Explainability (XAI) -->
         <div class="glass-card rounded-2xl p-6 space-y-4">
-          <h3 class="text-base font-semibold text-gray-200 flex items-center gap-2">
-            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-200 pb-3">
+            <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+            🔬 Clinical Explainability: How RETFound Identifies Vascular & Ocular Pathology
+          </h3>
+
+          <div class="space-y-4 text-xs leading-relaxed text-slate-700">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-sky-700 text-sm block mb-1.5">1. RETFound Self-Supervised Tokenization & Deep Saliency (What the AI Did)</span>
+              <p>The fundus photograph was processed through <strong>RETFound</strong> (Nature 2023), the 304M parameter Vision Transformer (ViT-Large/16) pretrained on 1.6 million retinal fundus and OCT images using Masked Autoencoders (MAE). The retina was partitioned into 16×16 non-overlapping patches and routed across 24 self-attention transformer blocks.<br><br>
+              <strong>Why Layer 20/24?</strong> In deep Vision Transformers, initial layers capture raw pixel edges while terminal layers collapse into generalized embeddings. Hooking Layer 20 of 24 extracts the optimal intermediate microvascular geometry (vessel caliber, bifurcation angles, and tortuosity) with high spatial localization without losing structural fidelity.</p>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-sky-700 text-sm block mb-1.5">2. Anatomical Structures & Biomarkers Identified (How It Identifies)</span>
+              <p>The attention heatmap isolates specific vascular biomarkers associated with subclinical vascular remodeling:</p>
+              <ul class="list-disc pl-5 mt-2 space-y-1">
+                <li><strong>Arteriolar-to-Venular Ratio (AVR) & Caliber Narrowing:</strong> Scrutinizes precapillary arteriolar caliber relative to venules along superior and inferior temporal vascular arcades. Focal or generalized attenuation reflects elevated systemic vascular resistance.</li>
+                <li><strong>Arteriovenous (AV) Crossing Impingement (AV Nicking):</strong> Salus' and Gunn's signs are detected where stiffened, thickened retinal arterioles compress crossing venules, providing structural evidence of chronic hypertensive and atherosclerotic damage.</li>
+                <li><strong>Peripapillary & Macular Perfusion:</strong> Scrutinizes capillary density surrounding the optic nerve head and foveal avascular zone (FAZ), flagging neuroretinal rim thinning (Optic Disc Cupping / Glaucoma).</li>
+                <li><strong>Ocular Lesion Topography:</strong> Detects microaneurysms, dot-and-blot intraretinal hemorrhages, and hard exudates indicative of Diabetic Retinopathy (DR) and Branch Retinal Vein Occlusion (BRVO).</li>
+              </ul>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-sky-700 text-sm block mb-1.5">3. The Eye-to-Heart Pathophysiological Axis (How Retina Translates to Carotid CIMT)</span>
+              <p><strong>Anatomical Continuity:</strong> The central retinal artery branches directly from the ophthalmic artery, which is the very first major intracranial branch of the Internal Carotid Artery (ICA). Because the retina and carotid circulation share identical embryological and hemodynamic environments, atherosclerotic plaque formation, endothelial shear stress, and intimal-medial thickening in the carotid artery directly parallel microvascular remodeling and arteriolar wall thickening in the fundus. The linear ridge regressor translates this 1,024-D retinal manifold into continuous CIMT wall thickness with an audited error of <strong>±0.120 mm</strong>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Clinical Diagnostic Report & Interpretation -->
+        <div class="glass-card rounded-2xl p-6 space-y-4">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Automated Clinical Diagnostic Report & Interpretation
           </h3>
           
           <div class="space-y-3 text-xs leading-relaxed">
-            <div class="p-3.5 bg-gray-900/80 rounded-xl border border-gray-800">
-              <span class="font-bold text-cyan-300 block mb-1">🔬 Microvascular Morphological Finding:</span>
-              <p id="repBio" class="text-gray-300"></p>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-sky-700 block mb-1">🔬 Microvascular Morphological Finding:</span>
+              <p id="repBio" class="text-slate-700"></p>
             </div>
 
-            <div class="p-3.5 bg-gray-900/80 rounded-xl border border-gray-800">
-              <span class="font-bold text-emerald-300 block mb-1">💡 Plain-Language (Layman) Summary:</span>
-              <p id="repLayman" class="text-gray-300"></p>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-emerald-700 block mb-1">💡 Plain-Language (Layman) Summary:</span>
+              <p id="repLayman" class="text-slate-700"></p>
             </div>
 
-            <div class="p-3.5 bg-gray-900/80 rounded-xl border border-gray-800">
-              <span class="font-bold text-amber-300 block mb-1">🩺 Recommended Action & Referral:</span>
-              <p id="repRec" class="text-gray-300"></p>
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span class="font-bold text-amber-700 block mb-1">🩺 Recommended Action & Referral:</span>
+              <p id="repRec" class="text-slate-700"></p>
             </div>
           </div>
+        </div>
         </div>
 
       </div>
@@ -884,10 +917,10 @@ HTML_TEMPLATE = """
       const badgeMode = document.getElementById('badgeDemoMode');
       if (res.demographics_mode === 'auto') {
         badgeMode.innerText = "Mode: Auto-Predicted Biomarkers";
-        badgeMode.className = "text-[10px] px-2.5 py-1 rounded-full font-mono bg-cyan-950 text-cyan-300 border border-cyan-800";
+        badgeMode.className = "text-[10px] px-2.5 py-1 rounded-full font-mono bg-sky-50 text-sky-700 border border-sky-200 font-semibold";
       } else {
         badgeMode.innerText = "Mode: Manual Demographic Override";
-        badgeMode.className = "text-[10px] px-2.5 py-1 rounded-full font-mono bg-indigo-950 text-indigo-300 border border-indigo-800";
+        badgeMode.className = "text-[10px] px-2.5 py-1 rounded-full font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold";
       }
 
       // 3. CVD Risk
@@ -898,23 +931,23 @@ HTML_TEMPLATE = """
 
       const badgeCVD = document.getElementById('badgeCVDStatus');
       if (res.is_high_risk) {
-        badgeCVD.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        badgeCVD.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200";
         badgeCVD.innerText = "HIGH RISK";
-        barCVD.className = "h-full rounded-full transition-all duration-700 bg-rose-500";
+        barCVD.className = "h-full rounded-full transition-all duration-700 bg-rose-600";
       } else {
-        badgeCVD.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        badgeCVD.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
         badgeCVD.innerText = "NORMAL";
-        barCVD.className = "h-full rounded-full transition-all duration-700 bg-emerald-500";
+        barCVD.className = "h-full rounded-full transition-all duration-700 bg-emerald-600";
       }
 
       // 4. CIMT mm Thickness
       document.getElementById('textCIMTmm').innerText = res.predicted_cimt_mm.toFixed(3) + " mm";
       const badgeCIMT = document.getElementById('badgeCIMTStatus');
       if (res.predicted_cimt_mm >= 0.90) {
-        badgeCIMT.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        badgeCIMT.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200";
         badgeCIMT.innerText = "Plaque (>= 0.90mm)";
       } else {
-        badgeCIMT.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        badgeCIMT.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
         badgeCIMT.innerText = "Normal (< 0.90mm)";
       }
 
@@ -931,20 +964,20 @@ HTML_TEMPLATE = """
 
       diseases.forEach(d => {
         const score = (res.retinal_diseases[d.key] * 100).toFixed(1);
-        let colorClass = "bg-emerald-500";
-        let textClass = "text-emerald-400";
-        if (score >= 40) { colorClass = "bg-rose-500"; textClass = "text-rose-400"; }
-        else if (score >= 15) { colorClass = "bg-amber-500"; textClass = "text-amber-400"; }
+        let colorClass = "bg-emerald-600";
+        let textClass = "text-emerald-700";
+        if (score >= 40) { colorClass = "bg-rose-600"; textClass = "text-rose-700"; }
+        else if (score >= 15) { colorClass = "bg-amber-500"; textClass = "text-amber-700"; }
 
         grid.innerHTML += `
-          <div class="p-3 bg-gray-900/60 rounded-xl border border-gray-800 flex flex-col justify-between">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between">
             <div>
-              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">${d.key}</span>
-              <span class="text-[11px] text-gray-300 font-medium block truncate">${d.label}</span>
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">${d.key}</span>
+              <span class="text-[11px] text-slate-800 font-semibold block truncate">${d.label}</span>
             </div>
             <div class="mt-2">
               <span class="text-sm font-bold ${textClass} font-mono">${score}%</span>
-              <div class="w-full bg-gray-800 rounded-full h-1.5 mt-1 overflow-hidden">
+              <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1 overflow-hidden">
                 <div class="${colorClass} h-full rounded-full" style="width: ${Math.min(score, 100)}%"></div>
               </div>
             </div>
