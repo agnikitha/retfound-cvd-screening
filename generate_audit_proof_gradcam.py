@@ -114,7 +114,7 @@ def determine_anatomical_quadrant(norm_x, norm_y, eye):
         is_temporal = norm_x >= 0.5
         
     h_str = "Temporal" if is_temporal else "Nasal"
-    target = f"{v_str}-{h_str} Retinal {'Arcade' if is_temporal else 'Quadrant'}"
+    target = f"{v_str}-{h_str} Retinal Quadrant"
     return target
 
 def compute_retfound_gradcam_and_random(img_path, w_eye, m_eye, rng):
@@ -252,9 +252,9 @@ for pid in PATIENT_IDS:
         
         # Audit-compliant Saliency Profile (not claiming histological pathology)
         if peak_val >= 0.80:
-            saliency_profile = "Focal Microvascular Token Attribution"
+            saliency_profile = "Focal Token Attribution"
         else:
-            saliency_profile = "Diffuse Retinal Vascular Attribution"
+            saliency_profile = "Diffuse Token Attribution"
 
         # Render 3-panel figure
         fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor="#ffffff", dpi=140)
@@ -263,7 +263,7 @@ for pid in PATIENT_IDS:
         axes[0].axis("off")
 
         axes[1].imshow(p2)
-        axes[1].set_title("2. Vascular Attention Heatmap (Layer 20/24)", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
+        axes[1].set_title("2. Grad-CAM Attribution (Block 20/24)", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
         axes[1].axis("off")
 
         axes[2].imshow(p3)
