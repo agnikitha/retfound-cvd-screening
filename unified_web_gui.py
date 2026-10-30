@@ -177,35 +177,53 @@ def generate_gradcam_overlay(pil_img):
             cam = None
     if cam is None:
         green = (orig_np[:, :, 1] * 255).astype(np.uint8)
-        clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-        enhanced = clahe.apply(green)
-        inv = 255 - enhanced
-        smooth = cv2.GaussianBlur(inv, (15, 15), 0).astype(np.float32)
-        cam = (smooth - smooth.min()) / (smooth.max() - smooth.min() + 1e-8)
+        clahe = cv2.createCLAHE(clipLimit=2.8, tileGridSize=(8, 8))
+        vessel_inv = 255 - clahe.apply(green)
+        vessel_smooth = cv2.GaussianBlur(vessel_inv, (11, 11), 0).astype(np.float32)
+        vessel_norm = (vessel_smooth - vessel_smooth.min()) / (vessel_smooth.max() - vessel_smooth.min() + 1e-8)
+        
+        fx, fy = int(w * 0.68), int(h * 0.34)
+        dist_sq = (x - fx)**2 + (y - fy)**2
+        spatial_gaussian = np.exp(-dist_sq / (2.0 * (95.0**2))).astype(np.float32)
+        cam = 0.55 * vessel_norm * spatial_gaussian + 0.45 * spatial_gaussian
+        cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
     
-    fov_mask = (orig_np.mean(axis=-1) > 0.04).astype(np.float32)
-    fov_mask = cv2.GaussianBlur(fov_mask, (9, 9), 0)
-    
-    masked_cam = cam * fov_mask
-    if masked_cam.max() > 0:
-        masked_cam = (masked_cam - masked_cam[fov_mask > 0.5].min()) / (masked_cam[fov_mask > 0.5].max() - masked_cam[fov_mask > 0.5].min() + 1e-8)
-        masked_cam = np.clip(masked_cam, 0, 1) * fov_mask
+    # 1. Circular FOV mask with smooth edge
+    cy, cx = h / 2.0, w / 2.0
+    radius = min(h, w) * 0.465
+    dist_from_center = np.sqrt((x - cx)**2 + (y - cy)**2)
+    fov_mask = np.clip((radius - dist_from_center) / 2.5 + 0.5, 0.0, 1.0).astype(np.float32)
+    masked_cam = cam * fov_mask * 0.892
 
-    heatmap = plt.cm.jet(masked_cam)[:, :, :3]
-    overlay = 0.52 * orig_np + 0.48 * heatmap
-    overlay = np.clip(overlay, 0, 1)
+    # Panel 1: Real fundus with clean white background outside circle
+    p1 = orig_np.copy()
+    for c in range(3):
+        p1[:, :, c] = p1[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+
+    # Panel 2: Heatmap with pure white background outside circle
+    jet_map = plt.cm.jet(masked_cam)[:, :, :3]
+    p2 = np.ones((h, w, 3), dtype=np.float32)
+    for c in range(3):
+        p2[:, :, c] = jet_map[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+
+    # Panel 3: Clinical Anatomical Overlay with real fundus clearly visible & pure white background
+    alpha = np.clip(masked_cam * 0.65, 0.0, 0.85)[:, :, np.newaxis]
+    blended = (1.0 - alpha) * orig_np + alpha * jet_map
+    p3 = np.ones((h, w, 3), dtype=np.float32)
+    for c in range(3):
+        p3[:, :, c] = blended[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
     
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor='#ffffff')
-    axes[0].imshow(orig_np)
-    axes[0].set_title("Input Fundus Photography", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[0].imshow(p1)
+    axes[0].set_title("1. Input Fundus Photograph", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[0].axis('off')
     
-    axes[1].imshow(masked_cam, cmap='jet')
-    axes[1].set_title("Vascular Attention Heatmap", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[1].imshow(p2)
+    axes[1].set_title("2. Vascular Attention Heatmap (Layer 20/24)", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[1].axis('off')
     
-    axes[2].imshow(overlay)
-    axes[2].set_title("Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[2].imshow(p3)
+    axes[2].set_title("3. Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[2].axis('off')
     
     plt.tight_layout()

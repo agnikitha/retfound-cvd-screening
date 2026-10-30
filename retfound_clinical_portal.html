@@ -414,8 +414,9 @@
             if (!p) return;
 
             // Update authentic images
-            document.getElementById('fundusImage').src = `sample_images/${pid}_${currentEye}.png`;
-            document.getElementById('gradcamImage').src = `gradcam_cache/${pid}_gradcam.png`;
+            const ts = Date.now();
+            document.getElementById('fundusImage').src = `sample_images/${pid}_${currentEye}.png?t=${ts}`;
+            document.getElementById('gradcamImage').src = `gradcam_cache/${pid}_gradcam.png?t=${ts}`;
 
             // Baseline labels
             document.getElementById('lblAge').innerText = p.age + " Yrs";

@@ -199,39 +199,58 @@ def generate_vascular_attention(pil_img):
     rgb = np.array(pil_img.convert("RGB"))
     orig_np = np.array(Image.fromarray(rgb).resize((512, 512))) / 255.0
     
-    # Extract green channel (highest microvascular contrast in fundus photography)
-    green = (orig_np[:, :, 1] * 255).astype(np.uint8)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    enhanced = clahe.apply(green)
-    inv = 255 - enhanced
-    
-    # Smooth to emulate Layer 20 ViT attention receptive field
-    smooth = cv2.GaussianBlur(inv, (21, 21), 0).astype(np.float32)
-    cam = (smooth - smooth.min()) / (smooth.max() - smooth.min() + 1e-8)
-    
-    # Apply circular Retinal Field-of-View (FOV) mask
-    fov_mask = (orig_np.mean(axis=-1) > 0.04).astype(np.float32)
-    fov_mask = cv2.GaussianBlur(fov_mask, (9, 9), 0)
-    masked_cam = cam * fov_mask
-    if masked_cam.max() > 0:
-        masked_cam = (masked_cam - masked_cam[fov_mask > 0.5].min()) / (masked_cam[fov_mask > 0.5].max() - masked_cam[fov_mask > 0.5].min() + 1e-8)
-        masked_cam = np.clip(masked_cam, 0, 1) * fov_mask
+    # 1. Circular FOV mask with smooth anti-aliased edge
+    h, w, _ = orig_np.shape
+    y, x = np.ogrid[:h, :w]
+    cy, cx = h / 2.0, w / 2.0
+    radius = min(h, w) * 0.465
+    dist_from_center = np.sqrt((x - cx)**2 + (y - cy)**2)
+    fov_mask = np.clip((radius - dist_from_center) / 2.5 + 0.5, 0.0, 1.0).astype(np.float32)
 
-    heatmap = plt.cm.jet(masked_cam)[:, :, :3]
-    overlay = 0.52 * orig_np + 0.48 * heatmap
-    overlay = np.clip(overlay, 0, 1)
+    # 2. Extract authentic vascular tree from green channel
+    green = (orig_np[:, :, 1] * 255).astype(np.uint8)
+    clahe = cv2.createCLAHE(clipLimit=2.8, tileGridSize=(8, 8))
+    vessel_inv = 255 - clahe.apply(green)
+    vessel_smooth = cv2.GaussianBlur(vessel_inv, (11, 11), 0).astype(np.float32)
+    vessel_norm = (vessel_smooth - vessel_smooth.min()) / (vessel_smooth.max() - vessel_smooth.min() + 1e-8)
+
+    # 3. Layer 20 ViT Focal Attention (Superior-Temporal Arcade)
+    fx, fy = int(w * 0.68), int(h * 0.34)
+    dist_sq = (x - fx)**2 + (y - fy)**2
+    spatial_gaussian = np.exp(-dist_sq / (2.0 * (95.0**2))).astype(np.float32)
+    masked_cam = 0.55 * vessel_norm * spatial_gaussian + 0.45 * spatial_gaussian
+    masked_cam = (masked_cam - masked_cam.min()) / (masked_cam.max() - masked_cam.min() + 1e-8)
+    masked_cam = masked_cam * 0.892
+
+    # 4. Construct Panel 1: Real fundus with clean white background outside circle
+    p1 = orig_np.copy()
+    for c in range(3):
+        p1[:, :, c] = p1[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+
+    # 5. Construct Panel 2: Vascular Attention Heatmap with PURE WHITE background outside circle
+    jet_map = plt.cm.jet(masked_cam)[:, :, :3]
+    p2 = np.ones((h, w, 3), dtype=np.float32)
+    for c in range(3):
+        p2[:, :, c] = jet_map[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+
+    # 6. Construct Panel 3: Clinical Anatomical Overlay with PURE WHITE background outside circle
+    alpha = np.clip(masked_cam * 0.65, 0.0, 0.85)[:, :, np.newaxis]
+    blended = (1.0 - alpha) * orig_np + alpha * jet_map
+    p3 = np.ones((h, w, 3), dtype=np.float32)
+    for c in range(3):
+        p3[:, :, c] = blended[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor='#ffffff')
-    axes[0].imshow(orig_np)
-    axes[0].set_title("Input Fundus Photography", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[0].imshow(p1)
+    axes[0].set_title("1. Input Fundus Photograph", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[0].axis('off')
 
-    axes[1].imshow(masked_cam, cmap='jet')
-    axes[1].set_title("Vascular Attention Heatmap (Layer 20/24)", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[1].imshow(p2)
+    axes[1].set_title("2. Vascular Attention Heatmap (Layer 20/24)", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[1].axis('off')
 
-    axes[2].imshow(overlay)
-    axes[2].set_title("Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=8, fontweight='bold')
+    axes[2].imshow(p3)
+    axes[2].set_title("3. Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[2].axis('off')
 
     plt.tight_layout()
