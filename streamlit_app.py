@@ -21,33 +21,36 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for crisp, clean medical white aesthetic
+# Custom CSS for crisp, clean medical white aesthetic (Strict Override)
 st.markdown("""
 <style>
-    /* Clean Medical White Theme */
-    .stApp {
+    /* Force Full Medical Pure White Canvas */
+    html, body, [data-testid="stAppViewContainer"], .stApp, .main, [data-testid="stHeader"], [data-testid="stToolbar"] {
         background-color: #ffffff !important;
+        background: #ffffff !important;
         color: #0f172a !important;
     }
-    header, [data-testid="stHeader"] {
-        background-color: #ffffff !important;
-    }
-    [data-testid="stSidebar"] {
+    [data-testid="stSidebar"], section[data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
         background-color: #f8fafc !important;
+        background: #f8fafc !important;
         border-right: 1px solid #e2e8f0 !important;
     }
     [data-testid="stSidebar"] * {
         color: #1e293b !important;
     }
+    /* Force headings & labels dark */
+    h1, h2, h3, h4, h5, h6, label, .stMarkdown p {
+        color: #0f172a !important;
+    }
     .main-header {
         font-size: 2.2rem;
         font-weight: 800;
-        color: #0284c7;
+        color: #0284c7 !important;
         margin-bottom: 0.2rem;
     }
     .sub-header {
         font-size: 1.05rem;
-        color: #475569;
+        color: #475569 !important;
         margin-bottom: 1.5rem;
     }
     .metric-card {
