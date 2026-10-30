@@ -214,7 +214,7 @@
                     </div>
                     <div>
                         <strong class="text-slate-500 block text-[10px] uppercase">Saliency Distribution</strong>
-                        <span id="saliencyType" class="text-slate-900 font-semibold text-xs">Multifocal Token Attribution (9 foci, C10 = 41.1%)</span>
+                        <span id="saliencyType" class="text-slate-900 font-semibold text-xs">Multifocal Token Attribution (12 foci, C10 = 41.2%)</span>
                     </div>
                     <div>
                         <strong class="text-slate-500 block text-[10px] uppercase">Eye Logit Contribution</strong>
@@ -267,14 +267,13 @@
                     <!-- Step 2 -->
                     <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                         <div class="font-bold text-sky-800 text-sm mb-1.5 flex items-center space-x-2">
-                            <span>2. Anatomical Structures & Biomarkers Identified (How It Identifies)</span>
+                            <span>2. Anatomical Attribution & Model Sensitivity (How It Identifies)</span>
                         </div>
-                        <p>The attention heatmap isolates specific vascular biomarkers associated with subclinical vascular remodeling:</p>
+                        <p>The Grad-CAM attribution map reflects model sensitivity to spatial retinal features (it does not diagnose specific lesions or histological pathology without pixel annotations):</p>
                         <ul class="list-disc pl-5 mt-2 space-y-1.5">
-                            <li><strong>Arteriolar-to-Venular Ratio (AVR) & Caliber Narrowing:</strong> Scrutinizes precapillary arteriolar caliber relative to venules along superior and inferior temporal vascular arcades. Focal or generalized attenuation reflects elevated systemic vascular resistance.</li>
-                            <li><strong>Arteriovenous (AV) Crossing Impingement (AV Nicking):</strong> Salus' and Gunn's signs are detected where stiffened, thickened retinal arterioles compress crossing venules, providing structural evidence of chronic hypertensive and atherosclerotic damage.</li>
-                            <li><strong>Peripapillary & Macular Perfusion:</strong> Scrutinizes capillary density surrounding the optic nerve head and foveal avascular zone (FAZ), flagging neuroretinal rim thinning (Optic Disc Cupping / Glaucoma).</li>
-                            <li><strong>Ocular Lesion Topography:</strong> Detects microaneurysms, dot-and-blot intraretinal hemorrhages, and hard exudates indicative of Diabetic Retinopathy (DR) and Branch Retinal Vein Occlusion (BRVO).</li>
+                            <li><strong>Vascular Arcade Geometry:</strong> Saliency predominantly concentrates along the superior-temporal and inferior-temporal vascular arcades, where pre-capillary vessel caliber, bifurcation geometry, and vessel tortuosity are imaged at highest contrast.</li>
+                            <li><strong>Model Sensitivity vs. Diagnosis:</strong> Saliency denotes regions where feature perturbations have maximal leverage on the retina-branch logit; it does not claim focal lesion detection or histological confirmation.</li>
+                            <li><strong>Optic Disc & Macula Reference:</strong> In this examination, the optic disc (0.0% overlap) and fovea (3.4% overlap) show minimal direct attribution, confirming sensitivity is concentrated along the major temporal vascular arcades rather than the optic nerve head.</li>
                         </ul>
                     </div>
 
@@ -398,7 +397,7 @@
         };
 
         const AUDIT_METADATA = {
-            "151594008_R": { pid: "151594008", eye: "R", split: "test", label: 1, c10: 0.411, n_hotspots: 9, target_quadrant: "Superior-Temporal Retinal Quadrant (68% mass)", saliency_profile: "Multifocal Token Attribution (9 foci, C10 = 41.1%)", quad_mass: { ST: 0.677, IT: 0.249, SN: 0.068, IN: 0.005 }, centred_logit_contrib: 1.0769, measured_corr_shuffled: 0.023 },
+            "151594008_R": { pid: "151594008", eye: "R", split: "test", label: 1, c10: 0.412, n_hotspots: 12, target_quadrant: "Superior-Temporal Retinal Quadrant (68% mass)", saliency_profile: "Multifocal Token Attribution (12 foci, C10 = 41.2%)", quad_mass: { ST: 0.68, IT: 0.25, SN: 0.07, IN: 0.00 }, centred_logit_contrib: 1.0769, measured_corr_shuffled: 0.023 },
             "151594008_L": { pid: "151594008", eye: "L", split: "test", label: 1, c10: 0.369, n_hotspots: 6, target_quadrant: "Superior-Temporal Retinal Quadrant (31% mass)", saliency_profile: "Multifocal Token Attribution (6 foci, C10 = 36.9%)", quad_mass: { ST: 0.313, IT: 0.283, SN: 0.243, IN: 0.161 }, centred_logit_contrib: -0.2672, measured_corr_shuffled: -0.293 },
             "151932002_R": { pid: "151932002", eye: "R", split: "test", label: 1, c10: 0.453, n_hotspots: 3, target_quadrant: "Superior-Temporal Retinal Quadrant (56% mass)", saliency_profile: "Multifocal Token Attribution (3 foci, C10 = 45.3%)", quad_mass: { ST: 0.565, IT: 0.36, SN: 0.062, IN: 0.013 }, centred_logit_contrib: 0.3384, measured_corr_shuffled: 0.091 },
             "151932002_L": { pid: "151932002", eye: "L", split: "test", label: 1, c10: 0.436, n_hotspots: 3, target_quadrant: "Superior-Nasal Retinal Quadrant (59% mass)", saliency_profile: "Multifocal Token Attribution (3 foci, C10 = 43.6%)", quad_mass: { ST: 0.179, IT: 0.054, SN: 0.589, IN: 0.179 }, centred_logit_contrib: 1.7056, measured_corr_shuffled: 0.091 },
