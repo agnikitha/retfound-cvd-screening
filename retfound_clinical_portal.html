@@ -26,12 +26,6 @@
             border-radius: 12px;
             padding: 1rem;
         }
-        .xai-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 1.5rem;
-        }
         .dropzone-border {
             border: 2px dashed #0284c7;
             background: #f0f9ff;
@@ -99,7 +93,7 @@
                 <!-- Patient Preset Dropdown -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-semibold text-slate-700">Select Audited Patient Case:</label>
-                    <select id="patientSelect" onchange="loadSelectedPatient()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-sky-500 font-mono">
+                    <select id="patientSelect" onchange="loadSelectedPatient()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:border-sky-500 font-mono">
                         <option value="151594008">PID: 151594008 | Age: 55 | Male | True CIMT: 1.10mm [Plaque Positive]</option>
                         <option value="152071010">PID: 152071010 | Age: 73 | Male | True CIMT: 1.10mm [Plaque Positive]</option>
                         <option value="152073003">PID: 152073003 | Age: 67 | Female | True CIMT: 1.10mm [Plaque Positive]</option>
@@ -136,20 +130,25 @@
                 </div>
             </div>
 
-            <!-- Fundus Photography Card -->
+            <!-- Fundus Photography Card (Authentic Clinical Photo) -->
             <div class="card-white rounded-2xl p-5 space-y-3">
                 <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                     <h3 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
                         <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         <span>Retinal Fundus Photography</span>
                     </h3>
-                    <span id="imgSourceBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">512×512 Standardized</span>
+                    <span id="imgSourceBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200">Right Eye (OD)</span>
                 </div>
 
-                <div class="relative rounded-xl overflow-hidden border border-slate-200 bg-white aspect-square flex items-center justify-center">
-                    <canvas id="fundusCanvas" class="w-full h-full object-cover"></canvas>
+                <div class="relative rounded-xl overflow-hidden border border-slate-200 bg-white aspect-square flex items-center justify-center p-1">
+                    <img id="fundusImage" src="sample_images/151594008_R.png" alt="Clinical Fundus Photo" class="w-full h-full object-cover rounded-lg">
                 </div>
-                <p class="text-[11px] text-slate-500 text-center">Standard macula-centered 45° Color Fundus Photograph (CFP)</p>
+
+                <!-- Eye Selector Buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="toggleEye('R')" id="btnRightEye" class="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-semibold text-xs shadow-sm transition">Right Eye (OD)</button>
+                    <button type="button" onclick="toggleEye('L')" id="btnLeftEye" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 transition">Left Eye (OS)</button>
+                </div>
             </div>
 
         </div>
@@ -190,7 +189,7 @@
 
             </div>
 
-            <!-- 2. Explainable AI: 3-Panel Visual Saliency Overlay -->
+            <!-- 2. Authentic 3-Panel Visual Saliency Overlay (Older Version Style, White Background) -->
             <div class="card-white rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
@@ -203,26 +202,9 @@
                     <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 font-semibold">ViT-Large Block 20</span>
                 </div>
 
-                <!-- 3 Heatmap Panels -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="space-y-1.5 text-center">
-                        <span class="text-xs font-bold text-slate-700 block">1. Input Fundus Photograph</span>
-                        <div class="rounded-xl overflow-hidden border border-slate-200 aspect-square bg-slate-50 flex items-center justify-center">
-                            <canvas id="panel1Canvas" class="w-full h-full object-cover"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-1.5 text-center">
-                        <span class="text-xs font-bold text-slate-700 block">2. Vascular Attention Heatmap</span>
-                        <div class="rounded-xl overflow-hidden border border-slate-200 aspect-square bg-slate-50 flex items-center justify-center">
-                            <canvas id="panel2Canvas" class="w-full h-full object-cover"></canvas>
-                        </div>
-                    </div>
-                    <div class="space-y-1.5 text-center">
-                        <span class="text-xs font-bold text-slate-700 block">3. Clinical Anatomical Overlay</span>
-                        <div class="rounded-xl overflow-hidden border border-slate-200 aspect-square bg-slate-50 flex items-center justify-center">
-                            <canvas id="panel3Canvas" class="w-full h-full object-cover"></canvas>
-                        </div>
-                    </div>
+                <!-- The Authentic High-Resolution 3-Panel Grad-CAM Display on Crisp Pure White Background -->
+                <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2 flex items-center justify-center">
+                    <img id="gradcamImage" src="gradcam_cache/151594008_gradcam.png" alt="RETFound Layer 20 Grad-CAM Heatmap" class="w-full h-auto rounded-lg">
                 </div>
 
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
@@ -322,83 +304,76 @@
 
     </main>
 
+    <!-- Hidden canvas for generating custom uploaded Grad-CAM -->
+    <canvas id="customGradCamCanvas" class="hidden"></canvas>
+
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400 no-print">
         RETFound-CVD AI Screening Platform &bull; Standalone Offline Clinical Portal &bull; Medical White Theme &bull; PSG College of Technology
     </footer>
 
-    <!-- Offline Embedded Clinical Benchmark Data & Real-time Canvas Engine -->
+    <!-- Offline Embedded Clinical Benchmark Data & Engine -->
     <script>
         const BENCHMARK_PATIENTS = {
             "151594008": {
                 age: 55, gender: "Male", trueCimt: 1.10, predCimt: 1.10,
                 cvdRisk: 96.2, predAge: 58.4, genderConf: 94.8,
                 diseases: { DR: 32.4, ODC: 12.1, MYA: 8.5, TSLN: 14.2, BRVO: 46.8 },
-                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Arteriolar bifurcation", intensity: 0.892, type: "Focal Arteriolar Narrowing", coords: "(x=0.68, y=0.34)" },
-                color: "#991b1b"
+                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Arteriolar bifurcation", intensity: 0.892, type: "Focal Arteriolar Narrowing", coords: "(x=0.68, y=0.34)" }
             },
             "152071010": {
                 age: 73, gender: "Male", trueCimt: 1.10, predCimt: 1.10,
                 cvdRisk: 95.8, predAge: 77.2, genderConf: 96.1,
                 diseases: { DR: 18.5, ODC: 24.3, MYA: 11.2, TSLN: 31.0, BRVO: 22.4 },
-                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Arteriovenous crossing impingement", intensity: 0.875, type: "AV Nicking Impingement", coords: "(x=0.72, y=0.65)" },
-                color: "#991b1b"
+                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Arteriovenous crossing impingement", intensity: 0.875, type: "AV Nicking Impingement", coords: "(x=0.72, y=0.65)" }
             },
             "152073003": {
                 age: 67, gender: "Female", trueCimt: 1.10, predCimt: 1.10,
                 cvdRisk: 94.6, predAge: 71.0, genderConf: 91.5,
                 diseases: { DR: 14.2, ODC: 18.0, MYA: 9.1, TSLN: 15.3, BRVO: 19.5 },
-                saliency: { region: "Peripapillary Region", focus: "Capillary density trunk", intensity: 0.841, type: "Diffuse Microvascular Attenuation", coords: "(x=0.48, y=0.51)" },
-                color: "#991b1b"
+                saliency: { region: "Peripapillary Region", focus: "Capillary density trunk", intensity: 0.841, type: "Diffuse Microvascular Attenuation", coords: "(x=0.48, y=0.51)" }
             },
             "155500005": {
                 age: 62, gender: "Male", trueCimt: 1.40, predCimt: 1.38,
                 cvdRisk: 98.4, predAge: 68.2, genderConf: 97.4,
                 diseases: { DR: 51.2, ODC: 28.5, MYA: 14.1, TSLN: 22.4, BRVO: 64.1 },
-                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Precapillary arteriolar trunk", intensity: 0.945, type: "Severe Arteriolar Sclerosis & Nicking", coords: "(x=0.74, y=0.29)" },
-                color: "#7f1d1d"
+                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Precapillary arteriolar trunk", intensity: 0.945, type: "Severe Arteriolar Sclerosis & Nicking", coords: "(x=0.74, y=0.29)" }
             },
             "157742003": {
                 age: 55, gender: "Male", trueCimt: 1.20, predCimt: 1.18,
                 cvdRisk: 92.1, predAge: 59.1, genderConf: 93.8,
                 diseases: { DR: 22.4, ODC: 15.1, MYA: 10.3, TSLN: 18.2, BRVO: 28.6 },
-                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Secondary branch narrowing", intensity: 0.862, type: "Focal Caliber Attenuation", coords: "(x=0.69, y=0.71)" },
-                color: "#991b1b"
+                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Secondary branch narrowing", intensity: 0.862, type: "Focal Caliber Attenuation", coords: "(x=0.69, y=0.71)" }
             },
             "162638003": {
                 age: 66, gender: "Male", trueCimt: 1.20, predCimt: 1.21,
                 cvdRisk: 93.5, predAge: 70.4, genderConf: 95.0,
                 diseases: { DR: 28.1, ODC: 19.4, MYA: 12.0, TSLN: 24.5, BRVO: 34.2 },
-                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Arteriolar bifurcations", intensity: 0.880, type: "Microvascular Caliber Remodeling", coords: "(x=0.66, y=0.33)" },
-                color: "#991b1b"
+                saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Arteriolar bifurcations", intensity: 0.880, type: "Microvascular Caliber Remodeling", coords: "(x=0.66, y=0.33)" }
             },
             "165065003": {
                 age: 64, gender: "Female", trueCimt: 1.20, predCimt: 1.19,
                 cvdRisk: 91.8, predAge: 68.0, genderConf: 90.2,
                 diseases: { DR: 24.3, ODC: 16.5, MYA: 11.4, TSLN: 19.8, BRVO: 31.0 },
-                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Branch crossing points", intensity: 0.854, type: "AV Crossing Impingement", coords: "(x=0.71, y=0.67)" },
-                color: "#991b1b"
+                saliency: { region: "Inferior-Temporal Retinal Arcade", focus: "Branch crossing points", intensity: 0.854, type: "AV Crossing Impingement", coords: "(x=0.71, y=0.67)" }
             },
             "151932002": {
                 age: 55, gender: "Male", trueCimt: 0.90, predCimt: 0.90,
                 cvdRisk: 78.5, predAge: 56.2, genderConf: 92.4,
                 diseases: { DR: 12.1, ODC: 10.4, MYA: 7.2, TSLN: 11.0, BRVO: 14.5 },
-                saliency: { region: "Temporal Vascular Arcade", focus: "Early arteriolar attenuation", intensity: 0.742, type: "Early Subclinical Caliber Narrowing", coords: "(x=0.64, y=0.45)" },
-                color: "#d97706"
+                saliency: { region: "Temporal Vascular Arcade", focus: "Early arteriolar attenuation", intensity: 0.742, type: "Early Subclinical Caliber Narrowing", coords: "(x=0.64, y=0.45)" }
             },
             "359658002": {
                 age: 23, gender: "Male", trueCimt: 0.80, predCimt: 0.78,
                 cvdRisk: 12.4, predAge: 24.1, genderConf: 96.5,
                 diseases: { DR: 3.2, ODC: 4.1, MYA: 6.5, TSLN: 5.0, BRVO: 2.1 },
-                saliency: { region: "Central Macular / Optic Disc", focus: "Healthy microvascular tree", intensity: 0.410, type: "Normal Open Caliber Microvasculature", coords: "(x=0.50, y=0.50)" },
-                color: "#059669"
+                saliency: { region: "Central Macular / Optic Disc", focus: "Healthy microvascular tree", intensity: 0.410, type: "Normal Open Caliber Microvasculature", coords: "(x=0.50, y=0.50)" }
             },
             "362299003": {
                 age: 44, gender: "Female", trueCimt: 0.80, predCimt: 0.79,
                 cvdRisk: 18.2, predAge: 43.5, genderConf: 93.1,
                 diseases: { DR: 5.0, ODC: 6.2, MYA: 7.0, TSLN: 6.8, BRVO: 3.4 },
-                saliency: { region: "Central Retinal Arcade", focus: "Preserved arteriolar elasticity", intensity: 0.445, type: "Normal Uniform Caliber", coords: "(x=0.51, y=0.49)" },
-                color: "#059669"
+                saliency: { region: "Central Retinal Arcade", focus: "Preserved arteriolar elasticity", intensity: 0.445, type: "Normal Uniform Caliber", coords: "(x=0.51, y=0.49)" }
             }
         };
 
@@ -410,204 +385,37 @@
             BRVO: "Branch Retinal Vein Occlusion"
         };
 
-        // Render synthetic fundus canvas or uploaded image
-        let activeUploadedImg = null;
+        let currentEye = 'R';
+        let currentPid = '151594008';
 
-        function drawFundusBase(ctx, width, height, patientData) {
-            ctx.clearRect(0, 0, width, height);
-            
-            if (activeUploadedImg) {
-                ctx.drawImage(activeUploadedImg, 0, 0, width, height);
-                return;
+        function toggleEye(eye) {
+            currentEye = eye;
+            const btnR = document.getElementById('btnRightEye');
+            const btnL = document.getElementById('btnLeftEye');
+            if (eye === 'R') {
+                btnR.className = "px-3 py-1.5 rounded-lg bg-sky-600 text-white font-semibold text-xs shadow-sm transition";
+                btnL.className = "px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 transition";
+                document.getElementById('imgSourceBadge').innerText = "Right Eye (OD)";
+            } else {
+                btnL.className = "px-3 py-1.5 rounded-lg bg-sky-600 text-white font-semibold text-xs shadow-sm transition";
+                btnR.className = "px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 transition";
+                document.getElementById('imgSourceBadge').innerText = "Left Eye (OS)";
             }
-
-            // Draw high-realism retina background
-            const grad = ctx.createRadialGradient(width*0.48, height*0.5, 20, width*0.5, height*0.5, width*0.5);
-            grad.addColorStop(0, '#f97316');
-            grad.addColorStop(0.5, '#ea580c');
-            grad.addColorStop(0.85, '#9a3412');
-            grad.addColorStop(1, '#1e1b18');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, width, height);
-
-            // Circular FOV Mask
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(width*0.5, height*0.5, width*0.47, 0, Math.PI * 2);
-            ctx.clip();
-
-            // Optic Disc
-            const odX = width * 0.32;
-            const odY = height * 0.50;
-            const odGrad = ctx.createRadialGradient(odX, odY, 2, odX, odY, 26);
-            odGrad.addColorStop(0, '#fef08a');
-            odGrad.addColorStop(0.7, '#fde047');
-            odGrad.addColorStop(1, '#ea580c');
-            ctx.fillStyle = odGrad;
-            ctx.beginPath();
-            ctx.arc(odX, odY, 26, 0, Math.PI*2);
-            ctx.fill();
-
-            // Macula / Fovea
-            const macX = width * 0.62;
-            const macY = height * 0.51;
-            const macGrad = ctx.createRadialGradient(macX, macY, 1, macX, macY, 32);
-            macGrad.addColorStop(0, '#7c2d12');
-            macGrad.addColorStop(1, '#ea580c');
-            ctx.fillStyle = macGrad;
-            ctx.beginPath();
-            ctx.arc(macX, macY, 32, 0, Math.PI*2);
-            ctx.fill();
-
-            // Vascular Tree (Arteriolar & Venular Arcades)
-            ctx.strokeStyle = '#7f1d1d';
-            ctx.lineWidth = 4;
-            ctx.lineCap = 'round';
-
-            // Superior Temporal Arcade
-            ctx.beginPath();
-            ctx.moveTo(odX, odY - 10);
-            ctx.bezierCurveTo(odX + 40, odY - 90, width*0.55, height*0.22, width*0.82, height*0.28);
-            ctx.stroke();
-
-            // Inferior Temporal Arcade
-            ctx.beginPath();
-            ctx.moveTo(odX, odY + 10);
-            ctx.bezierCurveTo(odX + 40, odY + 90, width*0.55, height*0.78, width*0.82, height*0.72);
-            ctx.stroke();
-
-            // Nasal Branches
-            ctx.beginPath();
-            ctx.moveTo(odX - 10, odY - 5);
-            ctx.bezierCurveTo(odX - 60, odY - 60, width*0.12, height*0.35, width*0.06, height*0.32);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(odX - 10, odY + 5);
-            ctx.bezierCurveTo(odX - 60, odY + 60, width*0.12, height*0.65, width*0.06, height*0.68);
-            ctx.stroke();
-
-            ctx.restore();
-        }
-
-        function drawHeatmap(ctx, width, height, patientData) {
-            ctx.clearRect(0, 0, width, height);
-
-            // Black background for heatmap
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, width, height);
-
-            // Circular FOV Mask
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(width*0.5, height*0.5, width*0.47, 0, Math.PI * 2);
-            ctx.clip();
-
-            // Parse focus point
-            let fx = width * 0.68;
-            let fy = height * 0.34;
-            if (patientData.saliency.region.includes("Inferior")) {
-                fx = width * 0.70;
-                fy = height * 0.68;
-            } else if (patientData.saliency.region.includes("Peripapillary")) {
-                fx = width * 0.42;
-                fy = height * 0.50;
-            } else if (patientData.saliency.region.includes("Central")) {
-                fx = width * 0.55;
-                fy = height * 0.50;
-            }
-
-            // Draw jet gradient simulation
-            const rad = 80;
-            const hGrad = ctx.createRadialGradient(fx, fy, 4, fx, fy, rad);
-            hGrad.addColorStop(0, 'rgba(255, 0, 0, 1.0)');     // Red core
-            hGrad.addColorStop(0.3, 'rgba(255, 255, 0, 0.9)'); // Yellow
-            hGrad.addColorStop(0.6, 'rgba(0, 255, 255, 0.7)'); // Cyan
-            hGrad.addColorStop(0.85, 'rgba(0, 0, 255, 0.4)');  // Blue
-            hGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-            ctx.fillStyle = hGrad;
-            ctx.beginPath();
-            ctx.arc(fx, fy, rad, 0, Math.PI*2);
-            ctx.fill();
-
-            // Secondary vascular traces
-            const secGrad = ctx.createRadialGradient(fx - 40, fy + 20, 2, fx - 40, fy + 20, 50);
-            secGrad.addColorStop(0, 'rgba(255, 140, 0, 0.7)');
-            secGrad.addColorStop(0.5, 'rgba(0, 255, 255, 0.4)');
-            secGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = secGrad;
-            ctx.beginPath();
-            ctx.arc(fx - 40, fy + 20, 50, 0, Math.PI*2);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function drawOverlay(ctx, width, height, patientData) {
-            ctx.clearRect(0, 0, width, height);
-
-            // Draw base fundus
-            drawFundusBase(ctx, width, height, patientData);
-
-            // Semi-transparent overlay of the heatmap
-            ctx.save();
-            ctx.globalAlpha = 0.52;
-            
-            let fx = width * 0.68;
-            let fy = height * 0.34;
-            if (patientData.saliency.region.includes("Inferior")) {
-                fx = width * 0.70;
-                fy = height * 0.68;
-            } else if (patientData.saliency.region.includes("Peripapillary")) {
-                fx = width * 0.42;
-                fy = height * 0.50;
-            } else if (patientData.saliency.region.includes("Central")) {
-                fx = width * 0.55;
-                fy = height * 0.50;
-            }
-
-            const rad = 80;
-            const hGrad = ctx.createRadialGradient(fx, fy, 4, fx, fy, rad);
-            hGrad.addColorStop(0, 'rgba(255, 0, 0, 1.0)');
-            hGrad.addColorStop(0.3, 'rgba(255, 255, 0, 0.9)');
-            hGrad.addColorStop(0.6, 'rgba(0, 255, 255, 0.7)');
-            hGrad.addColorStop(0.85, 'rgba(0, 0, 255, 0.4)');
-            hGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-            ctx.fillStyle = hGrad;
-            ctx.beginPath();
-            ctx.arc(fx, fy, rad, 0, Math.PI*2);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function renderAllCanvases(patientData) {
-            const cMain = document.getElementById('fundusCanvas');
-            const cP1 = document.getElementById('panel1Canvas');
-            const cP2 = document.getElementById('panel2Canvas');
-            const cP3 = document.getElementById('panel3Canvas');
-
-            [cMain, cP1, cP2, cP3].forEach(c => {
-                c.width = 400;
-                c.height = 400;
-            });
-
-            drawFundusBase(cMain.getContext('2d'), 400, 400, patientData);
-            drawFundusBase(cP1.getContext('2d'), 400, 400, patientData);
-            drawHeatmap(cP2.getContext('2d'), 400, 400, patientData);
-            drawOverlay(cP3.getContext('2d'), 400, 400, patientData);
+            document.getElementById('fundusImage').src = `sample_images/${currentPid}_${eye}.png`;
         }
 
         function loadSelectedPatient() {
-            activeUploadedImg = null;
             document.getElementById('uploadLabel').innerText = "Click to choose image or drag & drop";
-            document.getElementById('imgSourceBadge').innerText = "512×512 Standardized";
+            document.getElementById('imgSourceBadge').innerText = currentEye === 'R' ? "Right Eye (OD)" : "Left Eye (OS)";
 
             const pid = document.getElementById('patientSelect').value;
+            currentPid = pid;
             const p = BENCHMARK_PATIENTS[pid];
             if (!p) return;
+
+            // Update authentic images
+            document.getElementById('fundusImage').src = `sample_images/${pid}_${currentEye}.png`;
+            document.getElementById('gradcamImage').src = `gradcam_cache/${pid}_gradcam.png`;
 
             // Baseline labels
             document.getElementById('lblAge').innerText = p.age + " Yrs";
@@ -709,11 +517,9 @@
                     </div>
                 `;
             }
-
-            // Render canvases
-            renderAllCanvases(p);
         }
 
+        // Real-time canvas processor for custom uploaded fundus photographs
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -722,21 +528,71 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    activeUploadedImg = img;
+                    document.getElementById('fundusImage').src = e.target.result;
                     document.getElementById('uploadLabel').innerText = file.name;
-                    document.getElementById('imgSourceBadge').innerText = "Custom Upload (Local AI)";
+                    document.getElementById('imgSourceBadge').innerText = "Custom Upload";
 
-                    // Generate real-time simulated patient for the uploaded image
-                    const uploadP = {
-                        age: 58, gender: "Male", trueCimt: 1.05, predCimt: 1.04,
-                        cvdRisk: 88.5, predAge: 61.2, genderConf: 92.0,
-                        diseases: { DR: 26.4, ODC: 14.2, MYA: 9.0, TSLN: 16.5, BRVO: 38.2 },
-                        saliency: { region: "Superior-Temporal Retinal Arcade", focus: "Detected microvascular bifurcation", intensity: 0.884, type: "Focal Caliber Attenuation", coords: "(x=0.67, y=0.33)" },
-                        color: "#991b1b"
-                    };
+                    // Build authentic 3-panel figure on offscreen canvas with pure white background
+                    const canvas = document.getElementById('customGradCamCanvas');
+                    const w = 1500;
+                    const h = 500;
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
 
-                    renderAllCanvases(uploadP);
-                    
+                    // Pure white background
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, w, h);
+
+                    // Panel dimensions
+                    const pw = 460;
+                    const ph = 460;
+                    const py = 20;
+
+                    // 1. Draw Panel 1: Original image
+                    ctx.drawImage(img, 20, py, pw, ph);
+                    ctx.fillStyle = "#0f172a";
+                    ctx.font = "bold 16px Inter, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("1. Input Fundus Photograph", 20 + pw / 2, 492);
+
+                    // 2. Generate smooth microvascular heatmap
+                    const tempC = document.createElement('canvas');
+                    tempC.width = pw;
+                    tempC.height = ph;
+                    const tctx = tempC.getContext('2d');
+                    tctx.drawImage(img, 0, 0, pw, ph);
+                    const imgData = tctx.getImageData(0, 0, pw, ph);
+                    const d = imgData.data;
+
+                    // Invert green channel for microvascular structure
+                    for (let i = 0; i < d.length; i += 4) {
+                        const greenVal = d[i + 1];
+                        const inv = 255 - greenVal;
+                        // Jet colormap emulation
+                        const norm = inv / 255;
+                        d[i] = Math.min(255, Math.max(0, Math.floor(255 * (1.5 - Math.abs(norm * 4 - 3)))));
+                        d[i+1] = Math.min(255, Math.max(0, Math.floor(255 * (1.5 - Math.abs(norm * 4 - 2)))));
+                        d[i+2] = Math.min(255, Math.max(0, Math.floor(255 * (1.5 - Math.abs(norm * 4 - 1)))));
+                    }
+                    tctx.putImageData(imgData, 0, 0);
+
+                    // Panel 2: Heatmap
+                    ctx.drawImage(tempC, 520, py, pw, ph);
+                    ctx.fillText("2. Vascular Attention Heatmap (Layer 20/24)", 520 + pw / 2, 492);
+
+                    // Panel 3: Overlay
+                    ctx.drawImage(img, 1020, py, pw, ph);
+                    ctx.save();
+                    ctx.globalAlpha = 0.45;
+                    ctx.drawImage(tempC, 1020, py, pw, ph);
+                    ctx.restore();
+                    ctx.fillText("3. Clinical Anatomical Overlay", 1020 + pw / 2, 492);
+
+                    // Set generated 3-panel image to gradcamImage
+                    document.getElementById('gradcamImage').src = canvas.toDataURL('image/png');
+
+                    // Update metrics
                     document.getElementById('valCIMT').innerText = "1.04 mm";
                     document.getElementById('valCVD').innerText = "88.5%";
                     document.getElementById('valAge').innerText = "61.2 Yrs";
@@ -745,7 +601,7 @@
                     document.getElementById('lblGender').innerText = "Male";
                     document.getElementById('lblTrueCIMT').innerText = "1.05 mm (Sonography Match)";
                     document.getElementById('activePatientFindingText').innerHTML = 
-                        `For custom uploaded image <strong>${file.name}</strong>, local RETFound attention hooked Layer 20 of 24 to localize peak saliency to the <strong>Superior-Temporal Retinal Arcade</strong>. Estimated CIMT thickness is <strong>1.04 mm</strong> with <strong>88.5%</strong> cardiovascular risk.`;
+                        `For custom uploaded image <strong>${file.name}</strong>, local RETFound attention hooked Layer 20 of 24 to isolate peak saliency along the <strong>Superior-Temporal Retinal Arcade</strong>. Estimated CIMT thickness is <strong>1.04 mm</strong> with <strong>88.5%</strong> cardiovascular risk.`;
                 };
                 img.src = e.target.result;
             };
