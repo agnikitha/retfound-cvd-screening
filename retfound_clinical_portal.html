@@ -679,7 +679,7 @@
 
                     // Panel 2: Heatmap
                     drawCircular(520, () => ctx.drawImage(tempC, 520, py, pw, ph));
-                    ctx.fillText("2. Vascular Attention Heatmap (Layer 20/24)", 520 + pw / 2, 492);
+                    ctx.fillText("2. Positive Grad-CAM Attribution (Block 20/24)", 520 + pw / 2, 492);
 
                     // Panel 3: Overlay
                     drawCircular(1020, () => {
@@ -687,7 +687,7 @@
                         ctx.globalAlpha = 0.45;
                         ctx.drawImage(tempC, 1020, py, pw, ph);
                     });
-                    ctx.fillText("3. Clinical Anatomical Overlay", 1020 + pw / 2, 492);
+                    ctx.fillText("3. Grad-CAM Overlay on Fundus", 1020 + pw / 2, 492);
 
                     // Set generated 3-panel image to gradcamImage
                     document.getElementById('gradcamImage').src = canvas.toDataURL('image/png');

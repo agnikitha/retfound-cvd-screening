@@ -219,11 +219,11 @@ def generate_gradcam_overlay(pil_img):
     axes[0].axis('off')
     
     axes[1].imshow(p2)
-    axes[1].set_title("2. Vascular Attention Heatmap (Layer 20/24)", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
+    axes[1].set_title("2. Positive Grad-CAM Attribution (Block 20/24)", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[1].axis('off')
     
     axes[2].imshow(p3)
-    axes[2].set_title("3. Clinical Anatomical Overlay", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
+    axes[2].set_title("3. Grad-CAM Overlay on Fundus", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
     axes[2].axis('off')
     
     plt.tight_layout()
@@ -639,7 +639,7 @@ HTML_TEMPLATE = """
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
               <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              Explainable AI: Retinal Microvascular Attention (Grad-CAM Layer 20/24)
+              Explainable AI: RETFound Layer 20/24 Grad-CAM Saliency Maps
             </h3>
             <span class="text-[10px] bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-1 rounded-full font-mono font-semibold">
               Hooked: ViT Block -4
@@ -649,7 +649,7 @@ HTML_TEMPLATE = """
             <img id="gradcamImage" src="" alt="Grad-CAM Display" class="w-full h-auto">
           </div>
           <p class="text-[11px] text-slate-500 mt-3 italic text-center">
-            Figure: Left = Input Fundus; Middle = Normalized Vascular Activation; Right = Anatomical Overlay targeting superior/inferior temporal arcades.
+            Figure: Left = Input Fundus; Middle = Positive Grad-CAM Attribution (Block 20/24); Right = Grad-CAM Overlay on Fundus.
           </p>
         </div>
 

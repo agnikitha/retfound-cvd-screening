@@ -263,11 +263,11 @@ for pid in PATIENT_IDS:
         axes[0].axis("off")
 
         axes[1].imshow(p2)
-        axes[1].set_title("2. Grad-CAM Attribution (Block 20/24)", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
+        axes[1].set_title("2. Positive Grad-CAM Attribution (Block 20/24)", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
         axes[1].axis("off")
 
         axes[2].imshow(p3)
-        axes[2].set_title("3. Clinical Anatomical Overlay", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
+        axes[2].set_title("3. Grad-CAM Overlay on Fundus", color="#0f172a", fontsize=12, pad=10, fontweight="bold")
         axes[2].axis("off")
 
         plt.tight_layout()
