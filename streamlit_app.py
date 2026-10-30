@@ -531,16 +531,16 @@ if selected_img is not None:
     st.markdown(f"""
     <div class="xai-container">
         <h4 style="color:#0f172a; font-weight:800; font-size:1.15rem; margin-bottom:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.5rem;">
-            🔬 Clinical Explainability: How the Foundation Model Identifies Vascular & Ocular Pathology
+            🔬 Clinical Explainability: How RETFound Identifies Vascular & Ocular Pathology
         </h4>
         
         <div class="xai-step-title">
-            1. Visual Tokenization & Deep Microvascular Saliency (What the AI Did)
+            1. RETFound Self-Supervised Tokenization & Deep Saliency (What the AI Did)
         </div>
         <div class="xai-step-desc">
-            The fundus photograph was resized to 518×518 bicubic resolution and partitioned into 16×16 pixel non-overlapping patches. 
-            Across 24 self-attention transformer blocks, the model computed inter-patch cross-attention to isolate microvascular manifolds. 
-            <strong>Why Layer 20/24?</strong> In deep Vision Transformers, early layers (1–8) capture superficial texture/edges, while terminal layers (23–24) collapse into general classification tokens. Layer 20 is the critical intermediate tier where multi-scale vascular geometric structures (calibers, bifurcations, curvature) retain high spatial fidelity without losing anatomical localization.
+            The fundus photograph was processed through <strong>RETFound</strong> (Nature 2023), the 304M parameter Vision Transformer (ViT-Large/16) pretrained on 1.6 million retinal fundus and OCT images using Masked Autoencoders (MAE). 
+            The image was partitioned into 16×16 non-overlapping spatial patches and mapped across 24 self-attention transformer blocks. 
+            <strong>Why Layer 20/24?</strong> In deep Vision Transformers, initial layers capture raw pixel edges while terminal layers collapse into generalized embeddings. Hooking Layer 20 of 24 extracts the optimal intermediate microvascular geometry (vessel caliber, bifurcation angles, and tortuosity) with high spatial localization without losing structural fidelity.
         </div>
 
         <div class="xai-step-title">
