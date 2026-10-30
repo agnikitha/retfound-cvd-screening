@@ -182,11 +182,7 @@ def generate_gradcam_overlay(pil_img):
         vessel_smooth = cv2.GaussianBlur(vessel_inv, (11, 11), 0).astype(np.float32)
         vessel_norm = (vessel_smooth - vessel_smooth.min()) / (vessel_smooth.max() - vessel_smooth.min() + 1e-8)
         
-        fx, fy = int(w * 0.68), int(h * 0.34)
-        dist_sq = (x - fx)**2 + (y - fy)**2
-        spatial_gaussian = np.exp(-dist_sq / (2.0 * (95.0**2))).astype(np.float32)
-        cam = 0.55 * vessel_norm * spatial_gaussian + 0.45 * spatial_gaussian
-        cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
+        cam = vessel_norm
     
     # 1. Circular FOV mask with smooth edge
     cy, cx = h / 2.0, w / 2.0
