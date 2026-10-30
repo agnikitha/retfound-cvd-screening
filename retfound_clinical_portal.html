@@ -710,12 +710,6 @@
                     ctx.textAlign = "center";
                     ctx.fillText("3. Grad-CAM Overlay on Fundus", 1040 + pw / 2, 500);
 
-                    // Exactly ONE italic caption below the figure
-                    ctx.fillStyle = "#64748b";
-                    ctx.font = "italic 13px Inter, sans-serif";
-                    ctx.textAlign = "center";
-                    ctx.fillText("Grad-CAM at block 20/24 (retina branch only); reflects model sensitivity, not diagnosis. Systemic CVD risk is driven mainly by age and sex.", w / 2, 560);
-
                     // Update DOM
                     document.getElementById('gradcamImage').src = canvas.toDataURL('image/png');
 
