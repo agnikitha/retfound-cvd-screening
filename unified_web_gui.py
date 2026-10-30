@@ -200,11 +200,15 @@ def generate_gradcam_overlay(pil_img):
     for c in range(3):
         p1[:, :, c] = p1[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
-    # Panel 2: Heatmap with pure white background outside circle
+    # Panel 2: Vascular Attention Heatmap (Vessel contrast base + jet attention map)
     jet_map = plt.cm.jet(masked_cam)[:, :, :3]
-    p2 = np.ones((h, w, 3), dtype=np.float32)
+    gray = cv2.cvtColor((orig_np * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY) / 255.0
+    gray_light = 0.35 + 0.65 * gray
+    gray_3ch = np.stack([gray_light]*3, axis=-1)
+    alpha_heat = np.clip(masked_cam * 1.1, 0.0, 0.90)[:, :, np.newaxis]
+    p2 = (1.0 - alpha_heat) * gray_3ch + alpha_heat * jet_map
     for c in range(3):
-        p2[:, :, c] = jet_map[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+        p2[:, :, c] = p2[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
     # Panel 3: Clinical Anatomical Overlay with real fundus clearly visible & pure white background
     alpha = np.clip(masked_cam * 0.65, 0.0, 0.85)[:, :, np.newaxis]

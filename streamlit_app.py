@@ -227,11 +227,15 @@ def generate_vascular_attention(pil_img):
     for c in range(3):
         p1[:, :, c] = p1[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
-    # 5. Construct Panel 2: Vascular Attention Heatmap with PURE WHITE background outside circle
+    # 5. Construct Panel 2: Vascular Attention Heatmap (Vessel contrast base + jet attention map)
     jet_map = plt.cm.jet(masked_cam)[:, :, :3]
-    p2 = np.ones((h, w, 3), dtype=np.float32)
+    gray = cv2.cvtColor((orig_np * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY) / 255.0
+    gray_light = 0.35 + 0.65 * gray
+    gray_3ch = np.stack([gray_light]*3, axis=-1)
+    alpha_heat = np.clip(masked_cam * 1.1, 0.0, 0.90)[:, :, np.newaxis]
+    p2 = (1.0 - alpha_heat) * gray_3ch + alpha_heat * jet_map
     for c in range(3):
-        p2[:, :, c] = jet_map[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+        p2[:, :, c] = p2[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
     # 6. Construct Panel 3: Clinical Anatomical Overlay with PURE WHITE background outside circle
     alpha = np.clip(masked_cam * 0.65, 0.0, 0.85)[:, :, np.newaxis]
