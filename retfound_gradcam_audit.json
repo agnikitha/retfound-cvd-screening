@@ -7,11 +7,11 @@
     "norm_x": 0.176,
     "norm_y": 0.391,
     "peak_intensity": 0.875,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -22.6818,
-    "rim_share": 0.448,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 1.0769,
+    "rim_share_discarded": 0.448,
+    "measured_corr_shuffled": -0.143
   },
   "151594008_L": {
     "pid": "151594008",
@@ -22,10 +22,10 @@
     "norm_y": 0.105,
     "peak_intensity": 1.0,
     "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -18.4732,
-    "rim_share": 0.449,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": -0.2672,
+    "rim_share_discarded": 0.449,
+    "measured_corr_shuffled": -0.287
   },
   "151932002_R": {
     "pid": "151932002",
@@ -35,11 +35,11 @@
     "norm_x": 0.318,
     "norm_y": 0.174,
     "peak_intensity": 0.902,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.4203,
-    "rim_share": 0.492,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.3384,
+    "rim_share_discarded": 0.492,
+    "measured_corr_shuffled": 0.018
   },
   "151932002_L": {
     "pid": "151932002",
@@ -50,10 +50,10 @@
     "norm_y": 0.32,
     "peak_intensity": 1.0,
     "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -16.5004,
-    "rim_share": 0.443,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 1.7056,
+    "rim_share_discarded": 0.443,
+    "measured_corr_shuffled": 0.201
   },
   "152071010_R": {
     "pid": "152071010",
@@ -63,11 +63,11 @@
     "norm_x": 0.25,
     "norm_y": 0.178,
     "peak_intensity": 1.0,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.8892,
-    "rim_share": 0.525,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": -0.1304,
+    "rim_share_discarded": 0.525,
+    "measured_corr_shuffled": -0.247
   },
   "152071010_L": {
     "pid": "152071010",
@@ -78,10 +78,10 @@
     "norm_y": 0.107,
     "peak_intensity": 0.879,
     "target_quadrant": "Superior-Temporal Retinal Arcade",
-    "remodel_type": "Arteriolar Caliber Narrowing & Sclerosis",
-    "logit_contrib": -17.6817,
-    "rim_share": 0.36,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.5243,
+    "rim_share_discarded": 0.36,
+    "measured_corr_shuffled": 0.222
   },
   "152073003_R": {
     "pid": "152073003",
@@ -91,11 +91,11 @@
     "norm_x": 0.248,
     "norm_y": 0.246,
     "peak_intensity": 1.0,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -21.9626,
-    "rim_share": 0.448,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 1.7961,
+    "rim_share_discarded": 0.448,
+    "measured_corr_shuffled": 0.518
   },
   "152073003_L": {
     "pid": "152073003",
@@ -106,10 +106,10 @@
     "norm_y": 0.248,
     "peak_intensity": 0.807,
     "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -17.0332,
-    "rim_share": 0.478,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 1.1727,
+    "rim_share_discarded": 0.478,
+    "measured_corr_shuffled": -0.156
   },
   "155500005_R": {
     "pid": "155500005",
@@ -119,11 +119,11 @@
     "norm_x": 0.178,
     "norm_y": 0.32,
     "peak_intensity": 0.507,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.12,
-    "rim_share": 0.459,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Diffuse Retinal Vascular Attribution",
+    "centred_logit_contrib": 0.6387,
+    "rim_share_discarded": 0.459,
+    "measured_corr_shuffled": -0.157
   },
   "155500005_L": {
     "pid": "155500005",
@@ -134,10 +134,10 @@
     "norm_y": 0.391,
     "peak_intensity": 0.977,
     "target_quadrant": "Superior-Temporal Retinal Arcade",
-    "remodel_type": "Arteriolar Caliber Narrowing & Sclerosis",
-    "logit_contrib": -17.6259,
-    "rim_share": 0.495,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.58,
+    "rim_share_discarded": 0.495,
+    "measured_corr_shuffled": -0.182
   },
   "157742003_R": {
     "pid": "157742003",
@@ -147,11 +147,11 @@
     "norm_x": 0.18,
     "norm_y": 0.252,
     "peak_intensity": 1.0,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.3164,
-    "rim_share": 0.445,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.4423,
+    "rim_share_discarded": 0.445,
+    "measured_corr_shuffled": 0.177
   },
   "157742003_L": {
     "pid": "157742003",
@@ -162,10 +162,10 @@
     "norm_y": 0.322,
     "peak_intensity": 1.0,
     "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -18.537,
-    "rim_share": 0.413,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": -0.3311,
+    "rim_share_discarded": 0.413,
+    "measured_corr_shuffled": 0.32
   },
   "162638003_R": {
     "pid": "162638003",
@@ -175,11 +175,11 @@
     "norm_x": 0.252,
     "norm_y": 0.18,
     "peak_intensity": 0.837,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -22.6414,
-    "rim_share": 0.474,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 1.1173,
+    "rim_share_discarded": 0.474,
+    "measured_corr_shuffled": 0.222
   },
   "162638003_L": {
     "pid": "162638003",
@@ -190,10 +190,10 @@
     "norm_y": 0.107,
     "peak_intensity": 1.0,
     "target_quadrant": "Superior-Temporal Retinal Arcade",
-    "remodel_type": "Arteriolar Caliber Narrowing & Sclerosis",
-    "logit_contrib": -18.0546,
-    "rim_share": 0.427,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.1513,
+    "rim_share_discarded": 0.427,
+    "measured_corr_shuffled": -0.333
   },
   "165065003_R": {
     "pid": "165065003",
@@ -203,11 +203,11 @@
     "norm_x": 0.18,
     "norm_y": 0.252,
     "peak_intensity": 0.781,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.4485,
-    "rim_share": 0.51,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Diffuse Retinal Vascular Attribution",
+    "centred_logit_contrib": 0.3102,
+    "rim_share_discarded": 0.51,
+    "measured_corr_shuffled": -0.038
   },
   "165065003_L": {
     "pid": "165065003",
@@ -218,10 +218,10 @@
     "norm_y": 0.461,
     "peak_intensity": 0.934,
     "target_quadrant": "Superior-Temporal Retinal Arcade",
-    "remodel_type": "Arteriolar Caliber Narrowing & Sclerosis",
-    "logit_contrib": -18.1387,
-    "rim_share": 0.388,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": 0.0673,
+    "rim_share_discarded": 0.388,
+    "measured_corr_shuffled": 0.148
   },
   "359658002_R": {
     "pid": "359658002",
@@ -231,11 +231,11 @@
     "norm_x": 0.105,
     "norm_y": 0.605,
     "peak_intensity": 0.541,
-    "target_quadrant": "Inferior-Nasal Retinal Quadrant",
-    "remodel_type": "Microvascular Wall Remodeling",
-    "logit_contrib": -25.3569,
-    "rim_share": 0.413,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Inferior-Temporal Retinal Arcade",
+    "saliency_profile": "Diffuse Retinal Vascular Attribution",
+    "centred_logit_contrib": -1.5982,
+    "rim_share_discarded": 0.413,
+    "measured_corr_shuffled": 0.218
   },
   "359658002_L": {
     "pid": "359658002",
@@ -246,10 +246,10 @@
     "norm_y": 0.25,
     "peak_intensity": 0.781,
     "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -19.462,
-    "rim_share": 0.376,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Diffuse Retinal Vascular Attribution",
+    "centred_logit_contrib": -1.2561,
+    "rim_share_discarded": 0.376,
+    "measured_corr_shuffled": -0.564
   },
   "362299003_R": {
     "pid": "362299003",
@@ -259,11 +259,11 @@
     "norm_x": 0.178,
     "norm_y": 0.461,
     "peak_intensity": 1.0,
-    "target_quadrant": "Superior-Nasal Retinal Quadrant",
-    "remodel_type": "Arteriolar Attenuation",
-    "logit_contrib": -23.9452,
-    "rim_share": 0.5,
-    "corr_shuffled": -0.18
+    "target_quadrant": "Superior-Temporal Retinal Arcade",
+    "saliency_profile": "Focal Microvascular Token Attribution",
+    "centred_logit_contrib": -0.1865,
+    "rim_share_discarded": 0.5,
+    "measured_corr_shuffled": -0.201
   },
   "362299003_L": {
     "pid": "362299003",
@@ -274,9 +274,9 @@
     "norm_y": 0.678,
     "peak_intensity": 0.647,
     "target_quadrant": "Inferior-Temporal Retinal Arcade",
-    "remodel_type": "Arteriovenous (AV) Crossing Impingement",
-    "logit_contrib": -18.9875,
-    "rim_share": 0.51,
-    "corr_shuffled": -0.18
+    "saliency_profile": "Diffuse Retinal Vascular Attribution",
+    "centred_logit_contrib": -0.7816,
+    "rim_share_discarded": 0.51,
+    "measured_corr_shuffled": -0.376
   }
 }

@@ -215,13 +215,13 @@ def generate_vascular_attention(pil_img, pid=None):
             norm_y = audit_meta.get("norm_y", 0.34)
             return {
                 'region': audit_meta.get("target_quadrant", "Superior-Temporal Retinal Arcade"),
-                'arcade_focus': audit_meta.get("remodel_type", "Arteriolar Caliber Narrowing & Sclerosis"),
+                'arcade_focus': audit_meta.get("saliency_profile", "Focal Microvascular Token Attribution"),
                 'norm_y': norm_y,
                 'norm_x': norm_x,
                 'dist_from_center': round(float(np.sqrt((norm_x - 0.5)**2 + (norm_y - 0.5)**2)), 3),
                 'peak_intensity': audit_meta.get("peak_intensity", 0.892),
                 'is_focal': True,
-                'focus_type': audit_meta.get("remodel_type", "Arteriolar Caliber Narrowing & Sclerosis"),
+                'focus_type': audit_meta.get("saliency_profile", "Focal Microvascular Token Attribution"),
                 'plot_buf': img_bytes
             }
 

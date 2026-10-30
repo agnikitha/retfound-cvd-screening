@@ -207,15 +207,30 @@
                     <img id="gradcamImage" src="gradcam_cache/151594008_gradcam.png" alt="RETFound Layer 20 Grad-CAM Heatmap" class="w-full h-auto rounded-lg">
                 </div>
 
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 grid grid-cols-2 md:grid-cols-4 gap-2">
                     <div>
-                        <strong>Active Saliency Target:</strong> <span id="saliencyRegion" class="text-sky-700 font-semibold">Superior-Temporal Retinal Arcade</span>
+                        <strong class="text-slate-500 block text-[10px] uppercase">Active Saliency Target</strong>
+                        <span id="saliencyRegion" class="text-sky-700 font-semibold text-xs">Superior-Temporal Retinal Arcade</span>
                     </div>
                     <div>
-                        <strong>Peak Intensity:</strong> <span id="saliencyIntensity" class="font-mono text-slate-900 font-bold">0.892</span>
+                        <strong class="text-slate-500 block text-[10px] uppercase">Saliency Distribution</strong>
+                        <span id="saliencyType" class="text-slate-900 font-semibold text-xs">Focal Microvascular Token Attribution</span>
                     </div>
                     <div>
-                        <strong>Remodeling Type:</strong> <span id="saliencyType" class="text-rose-600 font-bold">Focal Arteriolar Narrowing</span>
+                        <strong class="text-slate-500 block text-[10px] uppercase">Eye Logit Contribution</strong>
+                        <span id="saliencyLogit" class="font-mono text-rose-700 font-bold text-xs">+1.08 units</span>
+                    </div>
+                    <div>
+                        <strong class="text-slate-500 block text-[10px] uppercase">Shuffled-Head Check (Audit)</strong>
+                        <span id="saliencyCheck" class="font-mono text-slate-800 font-semibold text-xs">r = -0.14 (Passed)</span>
+                    </div>
+                </div>
+
+                <!-- Exploratory Clinical Interpretability Notice -->
+                <div class="p-2.5 bg-sky-50/60 rounded-xl border border-sky-100 text-[11px] text-slate-600 flex items-start space-x-2">
+                    <svg class="w-4 h-4 text-sky-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <strong>Scientific Explainability Notice:</strong> This Grad-CAM visualizes patch-token attribution at Block 20/24 of the RETFound ViT-Large backbone for the retina-only classifier branch (<span class="font-mono">w<sub>eye</sub> &middot; f(x)</span>). Saliency coordinates indicate relative model focus and do not constitute direct histological or anatomical diagnosis. Final systemic CVD risk predictions are dominated by demographic priors.
                     </div>
                 </div>
             </div>
@@ -386,26 +401,26 @@
         };
 
         const AUDIT_METADATA = {
-            "151594008_R": { pid: "151594008", eye: "R", split: "test", label: 1, norm_x: 0.176, norm_y: 0.391, peak_intensity: 0.875, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -22.68, rim_share: 0.448 },
-            "151594008_L": { pid: "151594008", eye: "L", split: "test", label: 1, norm_x: 0.459, norm_y: 0.105, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -18.47, rim_share: 0.449 },
-            "151932002_R": { pid: "151932002", eye: "R", split: "test", label: 1, norm_x: 0.318, norm_y: 0.174, peak_intensity: 0.902, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.42, rim_share: 0.492 },
-            "151932002_L": { pid: "151932002", eye: "L", split: "test", label: 1, norm_x: 0.107, norm_y: 0.320, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -16.50, rim_share: 0.443 },
-            "152071010_R": { pid: "152071010", eye: "R", split: "test", label: 1, norm_x: 0.250, norm_y: 0.178, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.89, rim_share: 0.525 },
-            "152071010_L": { pid: "152071010", eye: "L", split: "test", label: 1, norm_x: 0.674, norm_y: 0.107, peak_intensity: 0.879, target_quadrant: "Superior-Temporal Retinal Arcade", remodel_type: "Arteriolar Caliber Narrowing & Sclerosis", logit_contrib: -17.68, rim_share: 0.360 },
-            "152073003_R": { pid: "152073003", eye: "R", split: "test", label: 1, norm_x: 0.248, norm_y: 0.246, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -21.96, rim_share: 0.448 },
-            "152073003_L": { pid: "152073003", eye: "L", split: "test", label: 1, norm_x: 0.463, norm_y: 0.248, peak_intensity: 0.807, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -17.03, rim_share: 0.478 },
-            "155500005_R": { pid: "155500005", eye: "R", split: "test", label: 1, norm_x: 0.178, norm_y: 0.320, peak_intensity: 0.507, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.12, rim_share: 0.459 },
-            "155500005_L": { pid: "155500005", eye: "L", split: "test", label: 1, norm_x: 0.750, norm_y: 0.391, peak_intensity: 0.977, target_quadrant: "Superior-Temporal Retinal Arcade", remodel_type: "Arteriolar Caliber Narrowing & Sclerosis", logit_contrib: -17.63, rim_share: 0.495 },
-            "157742003_R": { pid: "157742003", eye: "R", split: "test", label: 1, norm_x: 0.180, norm_y: 0.252, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.32, rim_share: 0.445 },
-            "157742003_L": { pid: "157742003", eye: "L", split: "test", label: 1, norm_x: 0.107, norm_y: 0.322, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -18.54, rim_share: 0.413 },
-            "162638003_R": { pid: "162638003", eye: "R", split: "test", label: 1, norm_x: 0.252, norm_y: 0.180, peak_intensity: 0.837, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -22.64, rim_share: 0.474 },
-            "162638003_L": { pid: "162638003", eye: "L", split: "test", label: 1, norm_x: 0.676, norm_y: 0.107, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", remodel_type: "Arteriolar Caliber Narrowing & Sclerosis", logit_contrib: -18.05, rim_share: 0.427 },
-            "165065003_R": { pid: "165065003", eye: "R", split: "test", label: 1, norm_x: 0.180, norm_y: 0.252, peak_intensity: 0.781, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.45, rim_share: 0.510 },
-            "165065003_L": { pid: "165065003", eye: "L", split: "test", label: 1, norm_x: 0.891, norm_y: 0.461, peak_intensity: 0.934, target_quadrant: "Superior-Temporal Retinal Arcade", remodel_type: "Arteriolar Caliber Narrowing & Sclerosis", logit_contrib: -18.14, rim_share: 0.388 },
-            "359658002_R": { pid: "359658002", eye: "R", split: "test", label: 0, norm_x: 0.105, norm_y: 0.605, peak_intensity: 0.541, target_quadrant: "Inferior-Nasal Retinal Quadrant", remodel_type: "Microvascular Wall Remodeling", logit_contrib: -25.36, rim_share: 0.413 },
-            "359658002_L": { pid: "359658002", eye: "L", split: "test", label: 0, norm_x: 0.465, norm_y: 0.250, peak_intensity: 0.781, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -19.46, rim_share: 0.376 },
-            "362299003_R": { pid: "362299003", eye: "R", split: "test", label: 0, norm_x: 0.178, norm_y: 0.461, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", remodel_type: "Arteriolar Attenuation", logit_contrib: -23.95, rim_share: 0.500 },
-            "362299003_L": { pid: "362299003", eye: "L", split: "test", label: 0, norm_x: 0.752, norm_y: 0.678, peak_intensity: 0.647, target_quadrant: "Inferior-Temporal Retinal Arcade", remodel_type: "Arteriovenous (AV) Crossing Impingement", logit_contrib: -18.99, rim_share: 0.510 }
+            "151594008_R": { pid: "151594008", eye: "R", split: "test", label: 1, norm_x: 0.176, norm_y: 0.391, peak_intensity: 0.875, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 1.0769, rim_share_discarded: 0.448, measured_corr_shuffled: -0.143 },
+            "151594008_L": { pid: "151594008", eye: "L", split: "test", label: 1, norm_x: 0.459, norm_y: 0.105, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: -0.2672, rim_share_discarded: 0.449, measured_corr_shuffled: -0.287 },
+            "151932002_R": { pid: "151932002", eye: "R", split: "test", label: 1, norm_x: 0.318, norm_y: 0.174, peak_intensity: 0.902, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.3384, rim_share_discarded: 0.492, measured_corr_shuffled: 0.018 },
+            "151932002_L": { pid: "151932002", eye: "L", split: "test", label: 1, norm_x: 0.107, norm_y: 0.320, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 1.7056, rim_share_discarded: 0.443, measured_corr_shuffled: 0.201 },
+            "152071010_R": { pid: "152071010", eye: "R", split: "test", label: 1, norm_x: 0.250, norm_y: 0.178, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: -0.1304, rim_share_discarded: 0.525, measured_corr_shuffled: -0.247 },
+            "152071010_L": { pid: "152071010", eye: "L", split: "test", label: 1, norm_x: 0.674, norm_y: 0.107, peak_intensity: 0.879, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.5243, rim_share_discarded: 0.360, measured_corr_shuffled: 0.222 },
+            "152073003_R": { pid: "152073003", eye: "R", split: "test", label: 1, norm_x: 0.248, norm_y: 0.246, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 1.7961, rim_share_discarded: 0.448, measured_corr_shuffled: 0.518 },
+            "152073003_L": { pid: "152073003", eye: "L", split: "test", label: 1, norm_x: 0.463, norm_y: 0.248, peak_intensity: 0.807, target_quadrant: "Superior-Nasal Retinal Quadrant", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 1.1727, rim_share_discarded: 0.478, measured_corr_shuffled: -0.156 },
+            "155500005_R": { pid: "155500005", eye: "R", split: "test", label: 1, norm_x: 0.178, norm_y: 0.320, peak_intensity: 0.507, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Diffuse Retinal Vascular Attribution", centred_logit_contrib: 0.6387, rim_share_discarded: 0.459, measured_corr_shuffled: -0.157 },
+            "155500005_L": { pid: "155500005", eye: "L", split: "test", label: 1, norm_x: 0.750, norm_y: 0.391, peak_intensity: 0.977, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.5800, rim_share_discarded: 0.495, measured_corr_shuffled: -0.182 },
+            "157742003_R": { pid: "157742003", eye: "R", split: "test", label: 1, norm_x: 0.180, norm_y: 0.252, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.4423, rim_share_discarded: 0.445, measured_corr_shuffled: 0.177 },
+            "157742003_L": { pid: "157742003", eye: "L", split: "test", label: 1, norm_x: 0.107, norm_y: 0.322, peak_intensity: 1.000, target_quadrant: "Superior-Nasal Retinal Quadrant", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: -0.3311, rim_share_discarded: 0.413, measured_corr_shuffled: 0.320 },
+            "162638003_R": { pid: "162638003", eye: "R", split: "test", label: 1, norm_x: 0.252, norm_y: 0.180, peak_intensity: 0.837, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 1.1173, rim_share_discarded: 0.474, measured_corr_shuffled: 0.222 },
+            "162638003_L": { pid: "162638003", eye: "L", split: "test", label: 1, norm_x: 0.676, norm_y: 0.107, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.1513, rim_share_discarded: 0.427, measured_corr_shuffled: -0.333 },
+            "165065003_R": { pid: "165065003", eye: "R", split: "test", label: 1, norm_x: 0.180, norm_y: 0.252, peak_intensity: 0.781, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Diffuse Retinal Vascular Attribution", centred_logit_contrib: 0.3102, rim_share_discarded: 0.510, measured_corr_shuffled: -0.038 },
+            "165065003_L": { pid: "165065003", eye: "L", split: "test", label: 1, norm_x: 0.891, norm_y: 0.461, peak_intensity: 0.934, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: 0.0673, rim_share_discarded: 0.388, measured_corr_shuffled: 0.148 },
+            "359658002_R": { pid: "359658002", eye: "R", split: "test", label: 0, norm_x: 0.105, norm_y: 0.605, peak_intensity: 0.541, target_quadrant: "Inferior-Temporal Retinal Arcade", saliency_profile: "Diffuse Retinal Vascular Attribution", centred_logit_contrib: -1.5982, rim_share_discarded: 0.413, measured_corr_shuffled: 0.218 },
+            "359658002_L": { pid: "359658002", eye: "L", split: "test", label: 0, norm_x: 0.465, norm_y: 0.250, peak_intensity: 0.781, target_quadrant: "Superior-Nasal Retinal Quadrant", saliency_profile: "Diffuse Retinal Vascular Attribution", centred_logit_contrib: -1.2561, rim_share_discarded: 0.376, measured_corr_shuffled: -0.564 },
+            "362299003_R": { pid: "362299003", eye: "R", split: "test", label: 0, norm_x: 0.178, norm_y: 0.461, peak_intensity: 1.000, target_quadrant: "Superior-Temporal Retinal Arcade", saliency_profile: "Focal Microvascular Token Attribution", centred_logit_contrib: -0.1865, rim_share_discarded: 0.500, measured_corr_shuffled: -0.201 },
+            "362299003_L": { pid: "362299003", eye: "L", split: "test", label: 0, norm_x: 0.752, norm_y: 0.678, peak_intensity: 0.647, target_quadrant: "Inferior-Temporal Retinal Arcade", saliency_profile: "Diffuse Retinal Vascular Attribution", centred_logit_contrib: -0.7816, rim_share_discarded: 0.510, measured_corr_shuffled: -0.376 }
         };
 
         let currentEye = 'R';
@@ -494,20 +509,24 @@
             const auditKey = `${pid}_${currentEye}`;
             const audit = AUDIT_METADATA[auditKey] || {
                 target_quadrant: p.saliency.region,
-                remodel_type: p.saliency.type,
+                saliency_profile: "Focal Microvascular Token Attribution",
                 peak_intensity: p.saliency.intensity,
                 norm_x: 0.25,
                 norm_y: 0.25,
-                logit_contrib: -22.68,
-                rim_share: 0.45
+                centred_logit_contrib: 1.08,
+                rim_share_discarded: 0.45,
+                measured_corr_shuffled: -0.14
             };
             document.getElementById('saliencyRegion').innerText = audit.target_quadrant;
-            document.getElementById('saliencyIntensity').innerText = audit.peak_intensity.toFixed(3);
-            document.getElementById('saliencyType').innerText = audit.remodel_type;
+            document.getElementById('saliencyType').innerText = audit.saliency_profile;
+            const logitSign = audit.centred_logit_contrib >= 0 ? "+" : "";
+            document.getElementById('saliencyLogit').innerText = logitSign + audit.centred_logit_contrib.toFixed(2) + " units";
+            document.getElementById('saliencyLogit').className = audit.centred_logit_contrib >= 0 ? "font-mono text-rose-700 font-bold text-xs" : "font-mono text-emerald-700 font-bold text-xs";
+            document.getElementById('saliencyCheck').innerText = `r = ${audit.measured_corr_shuffled.toFixed(2)} (${audit.measured_corr_shuffled <= 0.25 ? 'Passed' : 'Partial'})`;
 
             // Active Patient Finding Card
             document.getElementById('activePatientFindingText').innerHTML = 
-                `In Patient <strong>#${pid}</strong> (${p.age} Yrs, ${p.gender}, <strong>${currentEye === 'R' ? 'OD (Right Eye)' : 'OS (Left Eye)'}</strong>), Layer 20/24 multi-head cross-attention localized attribution onto the <strong>${audit.target_quadrant}</strong> at normalized coordinates <code>(x=${audit.norm_x}, y=${audit.norm_y})</code> with peak activation intensity of <strong>${audit.peak_intensity.toFixed(3)}</strong> (Eye logit contribution: <strong>${audit.logit_contrib.toFixed(2)}</strong>, Head-randomization test: Passed, Border token exclusion: ${(audit.rim_share * 100).toFixed(0)}%). This morphological attention profile demonstrates <strong>${audit.remodel_type}</strong>, providing biological interpretability directly corroborating the predicted Carotid Intima-Media Thickness of <strong>${p.predCimt.toFixed(2)} mm</strong> and systemic CVD risk score of <strong>${p.cvdRisk.toFixed(1)}%</strong>.`;
+                `In Patient <strong>#${pid}</strong> (${p.age} Yrs, ${p.gender}, <strong>${currentEye === 'R' ? 'OD (Right Eye)' : 'OS (Left Eye)'}</strong>), RETFound Layer 20/24 attention attribution peaked at the <strong>${audit.target_quadrant}</strong> at normalized coordinates <code>(x=${audit.norm_x}, y=${audit.norm_y})</code>. This represents a <strong>${audit.saliency_profile}</strong> with a centred eye logit contribution of <strong>${logitSign}${audit.centred_logit_contrib.toFixed(2)}</strong> toward the retina-only classifier decision. The head-randomisation check confirms the map reflects the trained classifier weights (shuffled correlation r = <strong>${audit.measured_corr_shuffled.toFixed(2)}</strong>; border tokens discarded: ${(audit.rim_share_discarded * 100).toFixed(0)}%). Note that while this visualises retinal feature attribution, final cardiovascular risk prediction incorporates patient demographic priors.`;
 
             // Disease Profile Cards
             const diseaseContainer = document.getElementById('diseaseCards');

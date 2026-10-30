@@ -63,6 +63,7 @@ clf = LogisticRegression(C=0.01, max_iter=1000, random_state=42).fit(sc.transfor
 w = (clf.coef_[0] / sc.scale_).astype(np.float32)
 b = float(clf.intercept_[0] - np.sum(clf.coef_[0] * sc.mean_ / sc.scale_))
 w_L, w_R = w[:1024], w[1024:]
+m_L, m_R = sc.mean_[:1024], sc.mean_[1024:]
 
 def find_patient_info(pid):
     for split in ("test", "val", "train"):
@@ -91,29 +92,76 @@ def token_valid(full_mask):
     valid[:, 0] = valid[:, -1] = False
     return valid
 
-def compute_retfound_gradcam(img_path, w_eye):
+def determine_anatomical_quadrant(norm_x, norm_y, eye):
+    """
+    Anatomically correct quadrant mapping:
+    - Superior: y < 0.5, Inferior: y >= 0.5
+    - Right Eye (OD): Optic nerve is Nasal (medial, user right side of photo x >= 0.5).
+      Macula/Fovea is Temporal (lateral, user left side of photo x < 0.5).
+    - Left Eye (OS): Optic nerve is Nasal (medial, user left side of photo x < 0.5).
+      Macula/Fovea is Temporal (lateral, user right side of photo x >= 0.5).
+    """
+    dist_from_c = np.sqrt((norm_x - 0.5)**2 + (norm_y - 0.5)**2)
+    if dist_from_c < 0.16:
+        return "Central Macular / Peripapillary Region"
+        
+    is_superior = norm_y < 0.5
+    v_str = "Superior" if is_superior else "Inferior"
+    
+    if eye == "R":
+        is_temporal = norm_x < 0.5
+    else:
+        is_temporal = norm_x >= 0.5
+        
+    h_str = "Temporal" if is_temporal else "Nasal"
+    target = f"{v_str}-{h_str} Retinal {'Arcade' if is_temporal else 'Quadrant'}"
+    return target
+
+def compute_retfound_gradcam_and_random(img_path, w_eye, m_eye, rng):
     pil_img = Image.open(img_path).convert("RGB")
-    orig_w, orig_h = pil_img.size
     
     # 224x224 input for ViT
     img224 = np.array(pil_img.resize((224, 224), Image.Resampling.LANCZOS))
     x_norm = (img224 / 255.0 - MEAN) / STD
     t = torch.tensor(x_norm, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).requires_grad_(True)
     
+    # 1. Authentic Grad-CAM
     model.zero_grad(set_to_none=True)
     feat = model.forward_features(t)[0]
-    contrib = torch.dot(feat, torch.tensor(w_eye, dtype=torch.float32))
-    contrib.backward()
+    contrib_raw = torch.dot(feat, torch.tensor(w_eye, dtype=torch.float32))
+    contrib_raw.backward()
     
     act = hook.act.detach()[0, 1:, :]       # (196, 1024)
     grad = hook.act.grad[0, 1:, :]          # (196, 1024)
     alpha = grad.mean(dim=0)                # channel importance
     cam = (act @ alpha).reshape(GRID, GRID).cpu().numpy()
     
+    # Properly centred logit contribution: w . (f - mean)
+    contrib_centered = float(contrib_raw.detach()) - float(np.dot(w_eye, m_eye))
+    
     # FOV mask & valid interior tokens
     full_mask, _ = fov_masks(img224)
     valid = token_valid(full_mask)
     rim_share = float(np.abs(cam)[~valid].sum() / (np.abs(cam).sum() + 1e-12))
+    
+    # 2. Authentic Shuffled Head Sanity Check (Permutation of weights)
+    w_shuffled = rng.permutation(w_eye)
+    t_rand = torch.tensor(x_norm, dtype=torch.float32).permute(2, 0, 1).unsqueeze(0).requires_grad_(True)
+    model.zero_grad(set_to_none=True)
+    feat_rand = model.forward_features(t_rand)[0]
+    contrib_rand = torch.dot(feat_rand, torch.tensor(w_shuffled, dtype=torch.float32))
+    contrib_rand.backward()
+    
+    act_rand = hook.act.detach()[0, 1:, :]
+    grad_rand = hook.act.grad[0, 1:, :]
+    alpha_rand = grad_rand.mean(dim=0)
+    cam_rand = (act_rand @ alpha_rand).reshape(GRID, GRID).cpu().numpy()
+    
+    # Compute true Pearson correlation between real and shuffled CAM
+    if np.std(cam[valid]) > 1e-9 and np.std(cam_rand[valid]) > 1e-9:
+        corr_rand = float(np.corrcoef(cam[valid], cam_rand[valid])[0, 1])
+    else:
+        corr_rand = 0.0
     
     # Clean upsampled CAM (224x224)
     cam_clean = np.where(valid, cam, 0.0)
@@ -121,7 +169,7 @@ def compute_retfound_gradcam(img_path, w_eye):
     scale = np.abs(cam_up).max() + 1e-12
     pos = np.clip(cam_up, 0, None) / scale
     
-    # Upsample to high resolution for display (e.g. 512x512)
+    # Upsample to high resolution for display (512x512)
     disp_size = (512, 512)
     img_disp = np.array(pil_img.resize(disp_size, Image.Resampling.LANCZOS)) / 255.0
     pos_high = cv2.resize(pos, disp_size, interpolation=cv2.INTER_CUBIC)
@@ -138,10 +186,9 @@ def compute_retfound_gradcam(img_path, w_eye):
         "img_disp": img_disp,
         "pos_high": pos_high,
         "circle_mask": circle_mask,
-        "contrib": float(contrib.detach()),
+        "contrib_centered": contrib_centered,
         "rim_share": rim_share,
-        "raw_cam": cam,
-        "valid": valid
+        "corr_rand": corr_rand
     }
 
 PATIENT_IDS = [
@@ -159,24 +206,14 @@ for pid in PATIENT_IDS:
     
     for eye in ("R", "L"):
         w_eye = w_R if eye == "R" else w_L
+        m_eye = m_R if eye == "R" else m_L
         img_name = f"{pid}_{eye}.png"
         img_path = os.path.join(IMG_DIR, img_name)
         if not os.path.exists(img_path):
             print(f"  Warning: {img_path} not found, skipping.")
             continue
             
-        res = compute_retfound_gradcam(img_path, w_eye)
-        
-        # Head randomization sanity check
-        cam_rand = res["raw_cam"]
-        valid = res["valid"]
-        # Random weight attribution
-        model.zero_grad(set_to_none=True)
-        # Compute correlation with shuffled weights
-        w_shuffled = rng.permutation(w_eye)
-        # Random check
-        t_dummy = torch.zeros((1, 3, 224, 224), requires_grad=True)
-        corr_rand = -0.18 # Verified in audit check
+        res = compute_retfound_gradcam_and_random(img_path, w_eye, m_eye, rng)
         
         img_disp = res["img_disp"]
         pos_high = res["pos_high"]
@@ -187,18 +224,11 @@ for pid in PATIENT_IDS:
         p1 = np.clip(p1, 0.0, 1.0)
         
         # 2. Panel 2: Vascular Attention Heatmap (Layer 20/24)
-        # Authentic ViT token activations colormapped on clinical white base
-        # Colormap: Jet
         jet_colors = plt.cm.jet(pos_high)[:, :, :3]
-        
-        # Clinical visualization: High-contrast retinal base with true token CAM
-        # Retinal vessel structural base
         gray = cv2.cvtColor((img_disp * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY) / 255.0
         gray_light = 0.30 + 0.70 * gray
         gray_3ch = np.stack([gray_light] * 3, axis=-1)
         
-        # Alpha blending of authentic attention: non-activated areas show clear vessel anatomy,
-        # activated areas show true mathematical ViT Layer 20 gradient colors
         alpha_cam = np.clip(pos_high * 1.25, 0.0, 0.92)[:, :, np.newaxis]
         p2 = (1.0 - alpha_cam) * gray_3ch + alpha_cam * jet_colors
         p2 = p2 * c_mask + 1.0 * (1.0 - c_mask)
@@ -217,24 +247,14 @@ for pid in PATIENT_IDS:
         norm_x = round(float(x_peak / w_d), 3)
         peak_val = round(float(pos_high.max()), 3)
         
-        # Clinical anatomical quadrant mapping from actual coordinates
-        if norm_y < 0.5 and norm_x >= 0.5:
-            quadrant = "Superior-Temporal Retinal Arcade"
-            remodel_type = "Arteriolar Caliber Narrowing & Sclerosis"
-        elif norm_y >= 0.5 and norm_x >= 0.5:
-            quadrant = "Inferior-Temporal Retinal Arcade"
-            remodel_type = "Arteriovenous (AV) Crossing Impingement"
-        elif norm_y < 0.5 and norm_x < 0.5:
-            quadrant = "Superior-Nasal Retinal Quadrant"
-            remodel_type = "Arteriolar Attenuation"
+        # Anatomically verified quadrant mapping (OD vs OS aware)
+        target_quadrant = determine_anatomical_quadrant(norm_x, norm_y, eye)
+        
+        # Audit-compliant Saliency Profile (not claiming histological pathology)
+        if peak_val >= 0.80:
+            saliency_profile = "Focal Microvascular Token Attribution"
         else:
-            quadrant = "Inferior-Nasal Retinal Quadrant"
-            remodel_type = "Microvascular Wall Remodeling"
-            
-        dist_from_c = np.sqrt((norm_x - 0.5)**2 + (norm_y - 0.5)**2)
-        if dist_from_c < 0.16:
-            quadrant = "Peripapillary / Macular Vascular Trunk"
-            remodel_type = "Diffuse Capillary Rarefaction"
+            saliency_profile = "Diffuse Retinal Vascular Attribution"
 
         # Render 3-panel figure
         fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor="#ffffff", dpi=140)
@@ -256,7 +276,6 @@ for pid in PATIENT_IDS:
         out_eye_path = os.path.join(OUT_CACHE, f"{pid}_{eye}_gradcam.png")
         plt.savefig(out_eye_path, format="png", dpi=140, bbox_inches="tight", facecolor="#ffffff")
         
-        # Default file
         if eye == "R" or not os.path.exists(os.path.join(OUT_CACHE, f"{pid}_gradcam.png")):
             out_default_path = os.path.join(OUT_CACHE, f"{pid}_gradcam.png")
             plt.savefig(out_default_path, format="png", dpi=140, bbox_inches="tight", facecolor="#ffffff")
@@ -272,18 +291,18 @@ for pid in PATIENT_IDS:
             "norm_x": norm_x,
             "norm_y": norm_y,
             "peak_intensity": peak_val,
-            "target_quadrant": quadrant,
-            "remodel_type": remodel_type,
-            "logit_contrib": round(res["contrib"], 4),
-            "rim_share": round(res["rim_share"], 3),
-            "corr_shuffled": corr_rand
+            "target_quadrant": target_quadrant,
+            "saliency_profile": saliency_profile,
+            "centred_logit_contrib": round(res["contrib_centered"], 4),
+            "rim_share_discarded": round(res["rim_share"], 3),
+            "measured_corr_shuffled": round(res["corr_rand"], 3)
         }
-        print(f"  -> Eye {eye}: peak at ({norm_x}, {norm_y}), quadrant: {quadrant}, contrib: {res['contrib']:+.3f}")
+        print(f"  -> Eye {eye}: peak at ({norm_x}, {norm_y}) = {target_quadrant} | Centred logit: {res['contrib_centered']:+.3f} | Shuffled head r: {res['corr_rand']:+.3f} | Rim discarded: {res['rim_share']:.1%}")
 
 # Save JSON audit file
 audit_json_path = os.path.join(BASE_DIR, "retfound_gradcam_audit.json")
 with open(audit_json_path, "w") as f:
     json.dump(audit_results, f, indent=2)
 
-print("\nAll 10 benchmark patients successfully processed with authentic RETFound ViT-Large Grad-CAM!")
+print("\nAll 10 benchmark patients successfully processed!")
 print(f"Audit metadata saved to {audit_json_path}")
