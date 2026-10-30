@@ -9,7 +9,17 @@ import cv2
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import streamlit as st
+
+# Clinical warm saliency colormap (Pure white at 0 -> Pale Gold -> Warm Amber -> Vivid Red -> Deep Wine)
+CLINICAL_SALIENCY_CMAP = LinearSegmentedColormap.from_list("clinical_saliency", [
+    (1.0, 1.0, 1.0),      # 0.00: White background (Baseline)
+    (1.0, 0.94, 0.65),   # 0.15: Soft Warm Gold
+    (0.98, 0.55, 0.15),   # 0.40: Amber / Orange
+    (0.85, 0.15, 0.15),   # 0.70: Vivid Red
+    (0.50, 0.00, 0.10)    # 1.00: Deep Crimson / Peak Saliency
+], N=256)
 
 # -----------------------------------------------------------------------------
 # Page Configuration & Styling
@@ -253,40 +263,47 @@ def generate_vascular_attention(pil_img, pid=None):
     for c in range(3):
         p1[:, :, c] = p1[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
-    # 5. Construct Panel 2: Vascular Attention Heatmap (Vessel contrast base + jet attention map)
-    jet_map = plt.cm.jet(masked_cam)[:, :, :3]
-    gray = cv2.cvtColor((orig_np * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY) / 255.0
-    gray_light = 0.35 + 0.65 * gray
-    gray_3ch = np.stack([gray_light]*3, axis=-1)
-    alpha_heat = np.clip(masked_cam * 1.1, 0.0, 0.90)[:, :, np.newaxis]
-    p2 = (1.0 - alpha_heat) * gray_3ch + alpha_heat * jet_map
+    # 5. Construct Panel 2: PURE Heatmap on crisp white aperture (no fundus underneath!)
+    heat_rgb = CLINICAL_SALIENCY_CMAP(masked_cam)[:, :, :3]
+    p2 = np.ones((h, w, 3), dtype=np.float32)
     for c in range(3):
-        p2[:, :, c] = p2[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
+        p2[:, :, c] = heat_rgb[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
-    # 6. Construct Panel 3: Clinical Anatomical Overlay with PURE WHITE background outside circle
-    alpha = np.clip(masked_cam * 0.65, 0.0, 0.85)[:, :, np.newaxis]
-    blended = (1.0 - alpha) * orig_np + alpha * jet_map
+    # 6. Construct Panel 3: Grad-CAM Overlay on Fundus (smooth alpha blend over color fundus)
+    alpha = np.clip((masked_cam - 0.05) / 0.95, 0.0, 1.0)[:, :, np.newaxis] * 0.60
+    blended = (1.0 - alpha) * orig_np + alpha * heat_rgb
     p3 = np.ones((h, w, 3), dtype=np.float32)
     for c in range(3):
         p3[:, :, c] = blended[:, :, c] * fov_mask + 1.0 * (1.0 - fov_mask)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5), facecolor='#ffffff')
-    axes[0].imshow(p1)
-    axes[0].set_title("1. Input Fundus Photograph", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
-    axes[0].axis('off')
+    fig = plt.figure(figsize=(15, 5.5), facecolor='#ffffff', dpi=160)
+    gs = fig.add_gridspec(1, 3, width_ratios=[1, 1, 1], wspace=0.15)
 
-    axes[1].imshow(p2)
-    axes[1].set_title("2. Positive Grad-CAM Attribution (Block 20/24)", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
-    axes[1].axis('off')
+    ax0 = fig.add_subplot(gs[0])
+    ax0.imshow(p1)
+    ax0.set_title("1. Input Fundus Photograph", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax0.axis('off')
 
-    axes[2].imshow(p3)
-    axes[2].set_title("3. Grad-CAM Overlay on Fundus", color='#0f172a', fontsize=12, pad=10, fontweight='bold')
-    axes[2].axis('off')
+    ax1 = fig.add_subplot(gs[1])
+    im1 = ax1.imshow(p2, cmap=CLINICAL_SALIENCY_CMAP, vmin=0.0, vmax=1.0)
+    ax1.set_title("2. Positive Grad-CAM Attribution (Block 20/24)", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax1.axis('off')
+    cbar = fig.colorbar(im1, ax=ax1, orientation="horizontal", fraction=0.046, pad=0.08, shrink=0.75)
+    cbar.set_label("Normalized Attribution [0.0 - 1.0]", fontsize=8.5, color="#334155", labelpad=5, fontweight="semibold")
+    cbar.ax.tick_params(labelsize=8, colors="#334155")
 
-    plt.tight_layout()
+    ax2 = fig.add_subplot(gs[2])
+    ax2.imshow(p3)
+    ax2.set_title("3. Grad-CAM Overlay on Fundus", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax2.axis('off')
+
+    # Single-line reviewer-grade caption
+    fig.text(0.5, 0.02, "Grad-CAM at block 20/24 (retina branch only); reflects model sensitivity, not diagnosis. Systemic CVD risk is driven mainly by age and sex.", 
+             ha="center", fontsize=9.5, style="italic", color="#475569")
+
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', dpi=180, bbox_inches='tight', facecolor='#ffffff')
-    plt.close()
+    plt.savefig(buf, format='png', dpi=160, bbox_inches='tight', facecolor='#ffffff')
+    plt.close(fig)
     
     # Extract authentic spatial metrics
     y_peak, x_peak = np.unravel_index(np.argmax(masked_cam), masked_cam.shape)
