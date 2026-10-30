@@ -282,11 +282,13 @@ def generate_vascular_attention(pil_img, pid=None):
     ax0 = fig.add_subplot(gs[0])
     ax0.imshow(p1)
     ax0.set_title("1. Input Fundus Photograph", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax0.add_patch(plt.Circle((w/2, h/2), radius, color="#cbd5e1", fill=False, linewidth=1.2))
     ax0.axis('off')
 
     ax1 = fig.add_subplot(gs[1])
     im1 = ax1.imshow(p2, cmap=CLINICAL_SALIENCY_CMAP, vmin=0.0, vmax=1.0)
     ax1.set_title("2. Positive Grad-CAM Attribution (Block 20/24)", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax1.add_patch(plt.Circle((w/2, h/2), radius, color="#cbd5e1", fill=False, linewidth=1.2))
     ax1.axis('off')
     cbar = fig.colorbar(im1, ax=ax1, orientation="horizontal", fraction=0.046, pad=0.08, shrink=0.75)
     cbar.set_label("Normalized Attribution [0.0 - 1.0]", fontsize=8.5, color="#334155", labelpad=5, fontweight="semibold")
@@ -295,6 +297,7 @@ def generate_vascular_attention(pil_img, pid=None):
     ax2 = fig.add_subplot(gs[2])
     ax2.imshow(p3)
     ax2.set_title("3. Grad-CAM Overlay on Fundus", color='#0f172a', fontsize=11.5, pad=10, fontweight='bold')
+    ax2.add_patch(plt.Circle((w/2, h/2), radius, color="#cbd5e1", fill=False, linewidth=1.2))
     ax2.axis('off')
 
     # Single-line reviewer-grade caption
